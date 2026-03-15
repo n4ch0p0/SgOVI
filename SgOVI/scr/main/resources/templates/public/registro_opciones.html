@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Registre - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-5 text-center">
+  <h2 class="mb-4">Com vols registrar-te?</h2>
+  <div class="row justify-content-center g-4">
+    <div class="col-md-5">
+      <div class="card h-100 border-primary">
+        <div class="card-body">
+          <h4>Nou Usuari OVI</h4>
+          <p>Necessite assistència personal.</p>
+          <a th:href="@{/registro/usuario}" class="btn btn-primary">Registre Usuari</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card h-100 border-success">
+        <div class="card-body">
+          <h4>Nou Assistent (PAP/PATI)</h4>
+          <p>Vull oferir els meus serveis d'assistència.</p>
+          <a th:href="@{/registro/asistente}" class="btn btn-success">Registre Assistent</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

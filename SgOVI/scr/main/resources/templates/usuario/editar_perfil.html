@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Editar Perfil - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-gear"></i> Editar el meu Perfil</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/usuario/perfil/guardar}" th:object="${usuario}" method="post">
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">DNI (No modificable)</label>
+                                <input type="text" class="form-control bg-light" th:field="*{dni}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-control" th:field="*{nom}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Cognoms</label>
+                                <input type="text" class="form-control" th:field="*{cognoms}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Correu Electrònic</label>
+                                <input type="email" class="form-control" th:field="*{email}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Telèfon</label>
+                                <input type="number" class="form-control" th:field="*{telefono}">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Nova Contrasenya</label>
+                            <input type="password" class="form-control" th:field="*{contrasenya}" required>
+                            <div class="form-text">Si us plau, torna a introduir la teua contrasenya actual si no vols canviar-la.</div>
+                        </div>
+
+                        <input type="hidden" th:field="*{consentimentInformat}">
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary">Cancel·lar</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Canvis</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

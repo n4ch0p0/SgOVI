@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Iniciar Sessió - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Iniciar Sessió</h3>
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">DNI o Correu</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contrasenya</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Els meus Contractes - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+  <h2>Els meus Contractes Actius</h2>
+  <hr>
+  <table class="table mt-3">
+    <thead class="table-dark">
+    <tr>
+      <th>Ref. Contracte</th>
+      <th>DNI Assistent (PAP)</th>
+      <th>Data Inici</th>
+      <th>Data Fi</th>
+      <th>Document</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${contratos}">
+      <td th:text="${c.id}">101</td>
+      <td th:text="${c.dniPap}">87654321B</td>
+      <td th:text="${c.fecha_Inici}">2024-01-01</td>
+      <td th:text="${c.fecha_Fin}">2024-12-31</td>
+      <td><a th:href="@{'/pdfs/' + ${c.pdf_Path}}" class="btn btn-sm btn-outline-danger">Veure PDF</a></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(contratos)}">
+      <td colspan="5" class="text-center">No tens registreContracteUsuarioOvis registrats.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

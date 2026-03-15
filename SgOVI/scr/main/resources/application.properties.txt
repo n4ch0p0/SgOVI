@@ -1,0 +1,5 @@
+spring.datasource.url=jdbc:postgresql://db-aules.uji.es/ei102725omf
+spring.datasource.username=ei102725omf
+spring.datasource.password=ei102725omf
+spring.datasource.driver-class-name=org.postgresql.Driver
+logging.level.org.springframework.jdbc.core.JdbcTemplate=DEBUG

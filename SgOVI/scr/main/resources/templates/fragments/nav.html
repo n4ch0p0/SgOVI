@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+            <i class="bi bi-people-fill me-2"></i>OVI Castelló
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item" th:if="${session.usuarioLogueado == null and session.asistenteLogueado == null and session.tecnicLogueado == null}">
+                    <a class="btn btn-outline-light ms-2" href="/registro/seleccion">Registrar-se</a>
+                </li>
+
+                <li class="nav-item" th:if="${session.usuarioLogueado != null or session.asistenteLogueado != null or session.tecnicLogueado != null}">
+                    <a class="btn btn-danger ms-2" th:href="@{/logout}">Tancar Sessió</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
