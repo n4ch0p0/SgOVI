@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Modificar Contracte - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Modificar Dates del Contracte #<span th:text="${contracte.id}"></span></h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/usuario/contractes/update}" method="post">
+                        <input type="hidden" name="id" th:value="${contracte.id}" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Assistent Assignat (DNI)</label>
+                            <input type="text" class="form-control bg-light" th:value="${contracte.dniAsistente}" readonly />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nova Data Inici</label>
+                                <input type="date" name="dataInici" class="form-control" th:value="${contracte.dataInici}" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nova Data Fi (Opcional)</label>
+                                <input type="date" name="dataFi" class="form-control" th:value="${contracte.dataFi}" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary">Guardar Canvis</button>
+                            <a th:href="@{/usuario/contractes}" class="btn btn-outline-secondary">Cancel·lar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

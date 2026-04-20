@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Tauler del Tècnic - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<div class="container mt-4">
+  <h2><i class="bi bi-shield-lock-fill"></i> Panell d'Administració OVI</h2>
+  <p class="text-muted">Gestió de validacions, sol·licituds i supervisió de registreContracteUsuarioOvis.</p>
+  <hr>
+
+  <div class="row g-4 mt-2">
+    <div class="col-md-6">
+      <div class="card h-100 border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary"><i class="bi bi-people-fill"></i> Persones Usuàries</h5>
+          <p class="card-text">Accepta o rebutja nous usuaris, consulta els motius de rebuig i revisa l'estat dels seus registreContracteUsuarioOvis.</p>
+          <a th:href="@{/tecnic/validar-usuarios}" class="btn btn-primary">Validar Usuaris</a>
+          <a th:href="@{/tecnic/usuarios}" class="btn btn-outline-primary">Llista Completa</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-success shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success"><i class="bi bi-person-badge-fill"></i> Assistents (PAP / PATI)</h5>
+          <p class="card-text">Accepta o rebutja nous candidats, consulta perfils i supervisa els seus registreContracteUsuarioOvis actius.</p>
+          <a th:href="@{/tecnic/validar-asistentes}" class="btn btn-success">Validar Assistents</a>
+          <a th:href="@{/tecnic/asistentes}" class="btn btn-outline-success">Llista Completa</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-warning shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-warning"><i class="bi bi-clipboard-check-fill"></i> Sol·licituds d'Assistència</h5>
+          <p class="card-text">Revisa les peticions d'assistència (AP) dels usuaris per acceptar-les o rebutjar-les abans de la negociació.</p>
+          <a th:href="@{/tecnic/solicitudes}" class="btn btn-warning text-dark">Gestionar Sol·licituds</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-info shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-info"><i class="bi bi-file-earmark-ruled-fill"></i> Supervisió Global</h5>
+          <p class="card-text">Supervisa les negociacions en curs (converses sense contracte) i l'estat general de tots els registreContracteUsuarioOvis.</p>
+          <a href="#" class="btn btn-info text-dark">Veure Negociacions</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

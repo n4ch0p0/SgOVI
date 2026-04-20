@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Els meus Contractes - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+  <h2>Els meus Contractes Actius</h2>
+  <hr>
+  <table class="table mt-3">
+    <thead class="table-dark">
+    <tr>
+      <th>Ref. Contracte</th>
+      <th>DNI Assistent (PAP)</th>
+      <th>Data Inici</th>
+      <th>Data Fi</th>
+      <th>Document</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${registreContracteUsuarioOvis}">
+      <td th:text="${c.id}"></td>
+      <td th:text="${c.dniAsistente}"></td>
+      <td th:text="${#temporals.format(c.dataInici, 'dd/MM/yyyy')}"></td>
+      <td th:text="${c.dataFi != null ? #temporals.format(c.dataFi, 'dd/MM/yyyy') : 'Indefinit'}"></td>
+      <td>
+        <a th:href="@{/usuario/contractes/editar/{id}(id=${c.id})}" class="btn btn-sm btn-warning">
+          <i class="bi bi-pencil"></i> Editar
+        </a>
+      </td>
+      <td><span class="badge bg-success">Formalitzat</span></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(registreContracteUsuarioOvis)}">
+      <td colspan="6" class="text-center">No tens contractes registrats.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Llistat Usuaris - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people"></i> Llistat Complet d'Usuaris OVI</h2>
+        <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary">Tornar al Menú</a>
+    </div>
+
+    <table class="table table-striped table-hover shadow-sm bg-white">
+        <thead class="table-dark">
+        <tr>
+            <th>DNI</th>
+            <th>Nom i Cognoms</th>
+            <th>Email</th>
+            <th>Telèfon</th>
+            <th>Estat</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${usuarios}">
+            <td th:text="${u.dni}" class="fw-bold"></td>
+            <td th:text="${u.nom} + ' ' + ${u.cognoms}"></td>
+            <td th:text="${u.email}"></td>
+            <td th:text="${u.telefono}"></td>
+            <td>
+                <span th:if="${u.estat == 'Acceptat'}" class="badge bg-success">Acceptat</span>
+                <span th:if="${u.estat == 'Pendent'}" class="badge bg-warning text-dark">Pendent</span>
+                <span th:if="${u.estat == 'Rebutjat'}" class="badge bg-danger">Rebutjat</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

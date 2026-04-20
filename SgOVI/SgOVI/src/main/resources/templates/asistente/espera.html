@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Perfil Pendent - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow border-info">
+                <div class="card-body p-5">
+                    <i class="bi bi-person-lines-fill text-info" style="font-size: 4rem;"></i>
+                    <h2 class="mt-3">Perfil en Revisió</h2>
+                    <p class="lead text-muted mt-3">La teua sol·licitud per a formar part de la borsa d'assistents (PAP/PATI) està sent avaluada.</p>
+                    <p>El personal tècnic revisarà la teua formació i experiència. Rebràs una notificació quan el teu perfil siga activat.</p>
+                    <a th:href="@{/logout}" class="btn btn-outline-secondary mt-4">Tornar a l'Inici</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

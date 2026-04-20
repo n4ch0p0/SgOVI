@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Les meues Sol·licituds - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Les meues Sol·licituds</h2>
+        <a th:href="@{/usuario/solicitudes/nueva}" class="btn btn-primary">Nova Sol·licitud</a>
+    </div>
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th>Ref.</th>
+            <th>Tipus Servei</th>
+            <th>Preferències</th>
+            <th>Estat</th>
+            <th>Accions</th> </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${solicitudes}">
+            <td th:text="${req.id}" class="fw-bold"></td>
+            <td th:text="${req.tipusServei}"></td>
+            <td th:text="${req.preferencies}"></td>
+            <td><span class="badge bg-info text-dark" th:text="${req.estat}"></span></td>
+            <td>
+                <a th:if="${req.estat == 'Aprovada'}" th:href="@{/usuario/solicitudes/{id}/candidatos(id=${req.id})}" class="btn btn-sm btn-primary">Buscar Assistents</a>
+                <span th:if="${req.estat != 'Aprovada'}" class="text-muted small">Pendent de Tècnic</span>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(solicitudes)}">
+            <td colspan="5" class="text-center">Encara no tens cap sol·licitud.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

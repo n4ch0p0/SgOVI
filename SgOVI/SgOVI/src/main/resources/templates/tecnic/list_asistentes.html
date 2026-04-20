@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Llistat Assistents - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-badge"></i> Llistat Complet d'Assistents</h2>
+    <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary">Tornar al Menú</a>
+  </div>
+
+  <table class="table table-striped table-hover shadow-sm bg-white">
+    <thead class="table-dark">
+    <tr>
+      <th>DNI</th>
+      <th>Nom i Cognoms</th>
+      <th>Tipus</th>
+      <th>Zona</th>
+      <th>Estat</th>
+      <th>Actiu</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="a : ${asistentes}">
+      <td th:text="${a.dni}" class="fw-bold"></td>
+      <td th:text="${a.nom} + ' ' + ${a.cognoms}"></td>
+      <td><span class="badge bg-info text-dark" th:text="${a.tipus}"></span></td>
+      <td th:text="${a.proximitatGeografica}"></td>
+      <td>
+        <span th:if="${a.estat == 'Acceptat'}" class="badge bg-success">Acceptat</span>
+        <span th:if="${a.estat == 'Pendent'}" class="badge bg-warning text-dark">Pendent</span>
+        <span th:if="${a.estat == 'Rebutjat'}" class="badge bg-danger">Rebutjat</span>
+      </td>
+      <td>
+        <i th:if="${a.actiu}" class="bi bi-check-circle-fill text-success"></i>
+        <i th:if="${!a.actiu}" class="bi bi-dash-circle text-muted"></i>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

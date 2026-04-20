@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('El meu Tauler - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<div class="container mt-4">
+  <h2>Hola, <span th:text="${usuario.nom}"></span>!</h2>
+  <p class="text-muted" th:text="'DNI: ' + ${usuario.dni}"></p>
+  <hr>
+
+  <div class="row g-4 mt-2">
+    <div class="col-md-6">
+      <div class="card h-100 border-secondary">
+        <div class="card-body">
+          <h5 class="card-title text-secondary"><i class="bi bi-person-gear"></i> El meu Perfil</h5>
+          <p class="card-text">Modifica les teues dades de contacte i informació personal.</p>
+          <a th:href="@{/usuario/perfil}" class="btn btn-outline-secondary">Editar Perfil</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary"><i class="bi bi-clipboard-plus-fill"></i> Assistència Personal</h5>
+          <p class="card-text">Crea una nova sol·licitud per buscar un PAP o PATI que s'adapte a les teues necessitats.</p>
+          <a th:href="@{/usuario/solicitudes/nueva}" class="btn btn-primary">Demanar Assistència</a>
+          <a th:href="@{/usuario/solicitudes}" class="btn btn-outline-primary mt-1">Les meues Sol·licituds</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-info">
+        <div class="card-body">
+          <h5 class="card-title text-info"><i class="bi bi-chat-text-fill"></i> Negociacions i Xat</h5>
+          <p class="card-text">Parla amb els candidats PAP/PATI compatibles i arriba a un acord per al servei.</p>
+          <a th:href="@{/conversa/list}"  class="btn btn-primary">Veure Converses</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 border-success">
+        <div class="card-body">
+          <h5 class="card-title text-success"><i class="bi bi-file-earmark-check-fill"></i> Els meus Contractes</h5>
+          <p class="card-text">Enregistra un nou contracte fruit d'una negociació o consulta l'estat dels actuals.</p>
+          <a th:href="@{/usuario/contractes}" class="btn btn-outline-success">Gestionar Contractes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

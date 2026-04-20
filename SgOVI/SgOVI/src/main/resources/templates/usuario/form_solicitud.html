@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Nova Sol·licitud - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Demanar Nova Assistència</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/usuario/solicitudes/add}" th:object="${apRequest}" method="post">
+                        <div class="mb-3">
+                            <label for="dniUsuario" class="form-label">El teu DNI</label>
+                            <input type="text" id="dniUsuario" class="form-control" th:field="*{dniUsuario}" required placeholder="Ex: 12345678A">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipusServei" class="form-label">Tipus de Servei Necessari</label>
+                            <select id="tipusServei" class="form-select" th:field="*{tipusServei}">
+                                <option value="PAP">PAP (Professional d'Assistència Personal)</option>
+                                <option value="PATY">PATY (Acompanyament)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="preferencies" class="form-label">Preferències / Necessitats específiques</label>
+                            <textarea id="preferencies" class="form-control" th:field="*{preferencies}" rows="3" placeholder="Horaris, tipus de suport..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Enviar Sol·licitud</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

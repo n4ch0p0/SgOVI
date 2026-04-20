@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Consultar Negociacions - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+  <h2>Estat de les Negociacions (Sol·licitud #<span th:text="${idRequest}"></span>)</h2>
+  <hr>
+
+  <div th:if="${#lists.isEmpty(converses)}" class="alert alert-warning">
+    Encara no s'ha iniciat cap conversa per a aquesta sol·licitud.
+  </div>
+
+  <div th:each="conv : ${converses}" class="card mb-4 shadow-sm">
+    <div class="card-header bg-dark text-white">
+      Xat entre Usuari i <strong th:text="${conv.nomAp}"></strong>
+    </div>
+    <div class="card-body bg-white" style="max-height: 200px; overflow-y: auto;">
+      <div th:each="m : ${conv.missatges}" class="mb-2">
+        <small class="fw-bold" th:text="${m.emissor} + ':'"></small>
+        <span th:text="${m.textMissatge}"></span>
+      </div>
+    </div>
+  </div>
+  <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">Tornar</a>
+</div>
+</body>
+</html>

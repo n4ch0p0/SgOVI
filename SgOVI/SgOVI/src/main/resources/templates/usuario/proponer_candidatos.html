@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidats - OVI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <h2>Proposar Candidat (Match)</h2>
+    <div class="alert alert-info">
+        <strong>Les teues preferències:</strong> <span th:text="${peticion.preferencies}"></span><br>
+        <strong>Tipus de servei sol·licitat:</strong> <span th:text="${peticion.tipusServei}"></span>
+    </div>
+
+    <table class="table table-striped table-hover mt-4">
+        <thead class="table-dark">
+        <tr>
+            <th>Assistent</th>
+            <th>Proximitat Geogràfica</th>
+            <th>Experiència</th>
+            <th>Formació</th>
+            <th>Acció</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cand : ${candidatos}">
+            <td th:text="${cand.nom} + ' (' + ${cand.dni} + ')'"></td>
+            <td th:text="${cand.proximitatGeografica}" class="fw-bold text-success"></td>
+            <td th:text="${cand.experienciaPrevia}"></td>
+            <td th:text="${cand.formacioAcademica}"></td>
+            <td>
+                <form th:action="@{/conversa/add}" method="post">
+                    <input type="hidden" name="idRequest" th:value="${peticion.id}">
+                    <input type="hidden" name="dniAp" th:value="${cand.dni}">
+                    <button type="submit" class="btn btn-sm btn-primary">Iniciar Conversa</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(candidatos)}">
+            <td colspan="5" class="text-center text-muted">No hi ha candidats actius d'aquest tipus ara mateix.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/usuario/solicitudes}" class="btn btn-secondary">Tornar a Sol·licituds</a>
+</div>
+</body>
+</html>
