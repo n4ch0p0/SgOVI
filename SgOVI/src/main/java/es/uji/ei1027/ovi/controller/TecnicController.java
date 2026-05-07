@@ -33,7 +33,6 @@ public class TecnicController {
         return "tecnic/dashboard";
     }
 
-    // --- NUEVAS RUTAS PARA LISTADO COMPLETO ---
     @GetMapping("/usuarios")
     public String listarTodosLosUsuarios(HttpSession session, Model model) {
         if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
@@ -48,7 +47,6 @@ public class TecnicController {
         return "tecnic/list_asistentes";
     }
 
-    // --- RUTAS DE VALIDACIÓN EXISTENTES ---
     @GetMapping("/validar-usuarios")
     public String listarUsuariosPendientes(HttpSession session, Model model) {
         if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";

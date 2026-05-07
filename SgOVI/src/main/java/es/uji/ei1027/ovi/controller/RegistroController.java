@@ -47,10 +47,9 @@ public class RegistroController {
 
     @PostMapping("/asistente/add")
     public String addAsistente(@ModelAttribute("asistente") AssistentPersonal asistente) {
-        // Guardamos en la tabla con el nuevo campo DNI
+        // Guardamos en la tabla con el campo DNI
         asistenteDao.addAsistente(asistente);
 
-        // Al redirigir a /login, el usuario podrá entrar usando su DNI en ambos campos
         return "redirect:/login?registrado=true";
     }
 }

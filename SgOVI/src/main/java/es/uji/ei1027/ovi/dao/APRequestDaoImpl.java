@@ -19,8 +19,6 @@ public class APRequestDaoImpl implements APRequestDao {
 
     @Override
     public void addRequest(APRequest r) {
-        // Hacemos una subconsulta para sacar el id_usuario a partir del DNI,
-        // y usamos ::tipus_ap y ::estat_apr para decirle a Postgres que son ENUMS
         String sql = "INSERT INTO aprequest (id_usuario, tipusservei, preferencies, estat) " +
                 "VALUES ((SELECT id_usuario FROM usuarioovi WHERE dni = ?), ?::tipus_ap, ?, 'Revisio'::estat_apr)";
 

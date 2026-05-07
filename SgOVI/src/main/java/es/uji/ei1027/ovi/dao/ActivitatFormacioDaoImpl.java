@@ -24,16 +24,13 @@ public class ActivitatFormacioDaoImpl implements ActivitatFormacioDao {
 
     @Override
     public List<ActivitatFormacio> getActivitatsActives() {
-        // Si tu consulta original tenía un WHERE para filtrar activas, añádelo aquí
         String sql = "SELECT * FROM activitatformacio";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ActivitatFormacio a = new ActivitatFormacio();
 
-            // Usamos los nombres EXACTOS de tu base de datos
             a.setId(rs.getInt("id_actividad"));
 
-            // Tu BD devuelve un número (id_formador), pero tu Java espera un String (dniFormador)
             a.setDniFormador(String.valueOf(rs.getInt("id_formador")));
 
             a.setTitol(rs.getString("titol"));

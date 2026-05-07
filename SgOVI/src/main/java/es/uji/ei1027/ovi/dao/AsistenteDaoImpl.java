@@ -35,7 +35,6 @@ public class AsistenteDaoImpl implements AsistenteDao {
         jdbcTemplate.update(sql, a.getFormacioAcademica(), a.getExperienciaPrevia(), a.getProximitatGeografica(), a.isActiu(), a.getDni());
     }
 
-    // Aquest mètode ja no fa falta amb els nous requisits, però si la interfície t'ho demana, deixa'l buit o adapta'l
     @Override
     public void updateEstados(String dni, boolean estadoAceptado, boolean actiu, boolean estatAcceptat) {
     }
@@ -69,7 +68,6 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     @Override
     public void updateEstadoAsistente(String dni, boolean aceptado) {
-        // Canviat per suportar l'string de l'enumerat i el rebuig
         String estat = aceptado ? "Acceptat" : "Rebutjat";
         jdbcTemplate.update("UPDATE AssistentPersonal SET estat = (?)::estat_validacio WHERE dni = ?", estat, dni);
     }

@@ -25,7 +25,6 @@ public class UsuarioController {
     @Autowired
     private RegistreContracteUsuarioDao registreContracteUsuarioDao;
 
-    // --- NUEVAS RUTAS DE CONTROL DE ACCESO ---
     @GetMapping("/espera")
     public String espera(HttpSession session) {
         if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
@@ -109,7 +108,6 @@ public class UsuarioController {
         return "redirect:/usuario/solicitudes";
     }
 
-    // --- NUEVO: EL USUARIO BUSCA CANDIDATOS ---
     @GetMapping("/solicitudes/{idRequest}/candidatos")
     public String buscarCandidatos(@PathVariable int idRequest, HttpSession session, Model model) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
