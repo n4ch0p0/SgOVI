@@ -45,28 +45,85 @@
 
         <div class="card-footer border-success">
             <p class="text-success fw-bold small mb-2"><i class="bi bi-file-earmark-check"></i> Si has arribat a un acord, registra el contracte:</p>
-            <form th:action="@{/usuario/contractes/add}" method="post" class="row g-2">
-                <input type="hidden" name="idRequest" th:value="${conv.idRequest}">
-                <input type="hidden" name="idAp" th:value="${conv.idAp}">
-
+            <div class="row g-2">
                 <div class="col-md-4">
                     <div class="input-group input-group-sm">
                         <span class="input-group-text">Inici</span>
-                        <input type="date" name="fechaInici" class="form-control" required>
+                        <input type="date" th:id="'fechaInici_' + ${conv.idConversa}" class="form-control" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="input-group input-group-sm">
                         <span class="input-group-text">Fi</span>
-                        <input type="date" name="fechaFin" class="form-control">
+                        <input type="date" th:id="'fechaFin_' + ${conv.idConversa}" class="form-control">
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-success btn-sm w-100">Registrar Contracte</button>
+                    <button type="button" class="btn btn-success btn-sm w-100"
+                            th:data-idrequest="${conv.idRequest}"
+                            th:data-idap="${conv.idAp}"
+                            th:data-nomap="${conv.nomAp}"
+                            th:data-idconv="${conv.idConversa}"
+                            onclick="mostrarModalContracte(this)">
+                        <i class="bi bi-file-earmark-plus"></i> Registrar Contracte
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Confirmar Contracte -->
+<div class="modal fade" id="modalContracte" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="bi bi-file-earmark-check-fill"></i> Confirmar Registre de Contracte</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+      </div>
+      <form th:action="@{/usuario/contractes/add}" method="post">
+        <div class="modal-body">
+          <p>Estàs segur/a que vols <strong class="text-success">formalitzar el contracte</strong>?</p>
+          <div class="alert alert-light border">
+            <strong>Assistent:</strong> <span id="contracteNomAp"></span><br>
+            <strong>Data Inici:</strong> <span id="contracteInici"></span><br>
+            <strong>Data Fi:</strong> <span id="contracteFi"></span>
+          </div>
+          <input type="hidden" name="idRequest" id="contracteIdRequest" />
+          <input type="hidden" name="idAp" id="contracteIdAp" />
+          <input type="hidden" name="fechaInici" id="contracteFechaIniciInput" />
+          <input type="hidden" name="fechaFin" id="contracteFechaFinInput" />
+          <p class="text-muted small">Aquesta acció és definitiva. La sol·licitud passarà a estat tancat.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i> Cancel·lar</button>
+          <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Sí, Registrar Contracte</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function mostrarModalContracte(btn) {
+    var idConv = btn.dataset.idconv;
+    var fechaInici = document.getElementById('fechaInici_' + idConv).value;
+    var fechaFin = document.getElementById('fechaFin_' + idConv).value;
+
+    if (!fechaInici) {
+        alert('Has d\'indicar almenys la data d\'inici del contracte.');
+        return;
+    }
+
+    document.getElementById('contracteNomAp').textContent = btn.dataset.nomap;
+    document.getElementById('contracteInici').textContent = fechaInici;
+    document.getElementById('contracteFi').textContent = fechaFin || 'Indefinit';
+    document.getElementById('contracteIdRequest').value = btn.dataset.idrequest;
+    document.getElementById('contracteIdAp').value = btn.dataset.idap;
+    document.getElementById('contracteFechaIniciInput').value = fechaInici;
+    document.getElementById('contracteFechaFinInput').value = fechaFin;
+    new bootstrap.Modal(document.getElementById('modalContracte')).show();
+}
+</script>
 </body>
 </html>

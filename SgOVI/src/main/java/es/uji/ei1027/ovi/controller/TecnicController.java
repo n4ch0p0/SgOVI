@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -58,10 +59,11 @@ public class TecnicController {
     public String decidirUsuario(@RequestParam("dni") String dni,
                                  @RequestParam("aceptado") boolean aceptado,
                                  @RequestParam(value = "motiu", required = false) String motiu,
-                                 HttpSession session) {
+                                 HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
         String estado = aceptado ? "Acceptat" : "Rebutjat";
         tecnicDao.actualizarEstadoUsuario(dni, estado, motiu);
+        redirectAttributes.addFlashAttribute("mensajeExito", "S'ha canviat l'estat de l'usuari a " + estado + ".");
         return "redirect:/tecnic/validar-usuarios";
     }
 
@@ -75,34 +77,37 @@ public class TecnicController {
     @PostMapping("/decidir-asistente")
     public String decidirAsistente(@RequestParam("dni") String dni,
                                    @RequestParam("aceptado") boolean aceptado,
-                                   HttpSession session) {
+                                   HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
         asistenteDao.updateEstadoAsistente(dni, aceptado);
+        String text = aceptado ? "Acceptat" : "Rebutjat";
+        redirectAttributes.addFlashAttribute("mensajeExito", "S'ha canviat l'estat de l'assistent a " + text + ".");
         return "redirect:/tecnic/validar-asistentes";
     }
 
     @GetMapping("/solicitudes")
-    public String listarSolicitudes(HttpSession session, Model model) {
-        if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
+    public String gestionarSolicitudes(Model model) {
         model.addAttribute("solicitudes", apRequestDao.getRequestsPendientes());
+        model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
         return "tecnic/gestionar_solicitudes";
     }
 
     @PostMapping("/aprobar-solicitud")
     public String aprobarSolicitud(@RequestParam("idRequest") int idRequest,
                                    @RequestParam("aceptada") boolean aceptada,
-                                   HttpSession session) {
+                                   HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
         String estado = aceptada ? "Aprovada" : "Rebutjada";
         apRequestDao.updateEstado(idRequest, estado);
+        redirectAttributes.addFlashAttribute("mensajeExito", "La sol·licitud s'ha marcat com a " + estado + ".");
         return "redirect:/tecnic/solicitudes";
     }
 
-    @GetMapping("/todos-contractes")
-    public String listarTodosLosContractes(HttpSession session, Model model) {
-        if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
-
+    @GetMapping("/contractes")
+    public String listTodosContractes(Model model) {
         model.addAttribute("contractes", registreContracteUsuarioDao.getTodosLosContractes());
+        model.addAttribute("mapaNomsClientsPorContracte", registreContracteUsuarioDao.obtenerMapaNombresUsuariosPorContracte());
+        model.addAttribute("mapaNomsAssistents", asistenteDao.obtenerMapaNombresAsistentes());
         return "tecnic/list_todos_contractes";
     }
 

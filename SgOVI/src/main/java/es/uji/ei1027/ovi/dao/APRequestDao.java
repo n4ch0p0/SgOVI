@@ -2,6 +2,7 @@ package es.uji.ei1027.ovi.dao;
 
 import es.uji.ei1027.ovi.model.APRequest;
 import java.util.List;
+import java.util.Map;
 
 public interface APRequestDao {
     void addRequest(APRequest request);
@@ -10,4 +11,5 @@ public interface APRequestDao {
     void updateEstado(int id, String estat);
 
     APRequest getRequest(int idRequest);
+    Map<Integer, String> obtenerMapaNombresRequests();
 }

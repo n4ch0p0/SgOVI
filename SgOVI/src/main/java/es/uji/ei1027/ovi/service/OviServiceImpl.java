@@ -43,7 +43,7 @@ public class OviServiceImpl implements OviService {
     @Override
     public AssistentPersonal loginAsistente(String dni, String password) {
         AssistentPersonal a = asistenteDao.getAsistente(dni);
-        if (a != null && a.getDni().equals(password)) return a;
+        if (a != null && a.getContrasenya().equals(password)) return a;
         return null;
     }
 

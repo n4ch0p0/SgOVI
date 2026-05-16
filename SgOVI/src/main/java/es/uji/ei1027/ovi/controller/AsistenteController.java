@@ -1,18 +1,24 @@
 package es.uji.ei1027.ovi.controller;
 
+import es.uji.ei1027.ovi.model.AssistentPersonal;
 import es.uji.ei1027.ovi.dao.ActivitatFormacioDao;
 import es.uji.ei1027.ovi.dao.AsistenteDao;
 import es.uji.ei1027.ovi.dao.RegistreContracteAsistenteDao;
+import es.uji.ei1027.ovi.dao.UsuarioDao;
+import es.uji.ei1027.ovi.dao.APRequestDao;
 import es.uji.ei1027.ovi.model.ActivitatFormacio;
-import es.uji.ei1027.ovi.model.AssistentPersonal;
+import es.uji.ei1027.ovi.model.Missatge;
+import es.uji.ei1027.ovi.model.MissatgeTecnic;
 import es.uji.ei1027.ovi.model.RegistreContracteAsistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/asistente")
@@ -27,8 +33,30 @@ public class AsistenteController {
     @Autowired
     private ActivitatFormacioDao activitatFormacioDao;
 
+    @Autowired
+    private UsuarioDao usuarioDao;
+
+    @Autowired
+    private APRequestDao apRequestDao;
+
+    // PÀGINA D'ESPERA PER ALS PENDENTS
+    @GetMapping("/espera")
+    public String espera(HttpSession session) {
+        if (session.getAttribute("asistenteLogueado") == null) return "redirect:/login";
+        return "asistente/espera";
+    }
+
+    // PÀGINA DE REBUIG
+    @GetMapping("/rebutjat")
+    public String rebutjat(HttpSession session, Model model) {
+        AssistentPersonal a = (AssistentPersonal) session.getAttribute("asistenteLogueado");
+        if (a == null) return "redirect:/login";
+        model.addAttribute("motiu", a.getMotiuRebuig());
+        return "asistente/rebutjat";
+    }
+
     // EL DASHBOARD PRINCIPAL
-    @GetMapping("/dashboard")
+    @RequestMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         AssistentPersonal asistente = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistente == null) return "redirect:/login";
@@ -37,6 +65,10 @@ public class AsistenteController {
         if (!"Acceptat".equals(asistente.getEstat())) return "redirect:/login";
 
         model.addAttribute("asistente", asistente);
+        // We also need the maps here in case the dashboard shows conversations directly
+        model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
+        model.addAttribute("mapaNomsRequests", apRequestDao.obtenerMapaNombresRequests());
+
         return "asistente/dashboard";
     }
 
@@ -51,7 +83,7 @@ public class AsistenteController {
     }
 
     @PostMapping("/perfil/actualizar")
-    public String actualizarPerfil(@ModelAttribute("asistente") AssistentPersonal asistenteActualizado, HttpSession session) {
+    public String actualizarPerfil(@ModelAttribute("asistente") AssistentPersonal asistenteActualizado, HttpSession session, RedirectAttributes redirectAttributes) {
         AssistentPersonal asistenteSesion = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistenteSesion == null) return "redirect:/login";
 
@@ -65,6 +97,7 @@ public class AsistenteController {
         asistenteDao.updateAsistente(asistenteActualizado);
         session.setAttribute("asistenteLogueado", asistenteActualizado);
 
+        redirectAttributes.addFlashAttribute("mensajeExito", "El teu perfil s'ha actualitzat correctament.");
         return "redirect:/asistente/dashboard";
     }
 
@@ -74,9 +107,8 @@ public class AsistenteController {
         AssistentPersonal asistente = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistente == null) return "redirect:/login";
 
-        List<RegistreContracteAsistente> misContractes = registreContracteAsistenteDao.getContractesByAsistente(asistente.getDni());
-        model.addAttribute("registreContracteUsuarioOvis", misContractes);
-
+        model.addAttribute("registreContracteUsuarioOvis", registreContracteAsistenteDao.getContractesByAsistente(asistente.getDni()));
+        model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
         return "asistente/contractes";
     }
 
@@ -86,18 +118,18 @@ public class AsistenteController {
         AssistentPersonal asistente = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistente == null) return "redirect:/login";
 
-        List<ActivitatFormacio> llistaActivitats = activitatFormacioDao.getActivitatsActives();
-        model.addAttribute("activitats", llistaActivitats);
-
+        model.addAttribute("activitats", activitatFormacioDao.getActivitatsActives());
+        model.addAttribute("mapaNomsFormadors", activitatFormacioDao.obtenerMapaNombresFormadores());
         return "asistente/formacio";
     }
 
     @PostMapping("/formacio/inscriure")
-    public String inscriureFormacio(@RequestParam("idActividad") int idActividad, HttpSession session) {
+    public String inscriureFormacio(@RequestParam("idActividad") int idActividad, HttpSession session, RedirectAttributes redirectAttributes) {
         AssistentPersonal asistente = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistente == null) return "redirect:/login";
 
         activitatFormacioDao.inscriureAsistente(idActividad, asistente.getDni());
+        redirectAttributes.addFlashAttribute("mensajeExito", "T'has inscrit a l'activitat de formació amb èxit!");
         return "redirect:/asistente/formacio";
     }
 

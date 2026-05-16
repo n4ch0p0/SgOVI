@@ -42,8 +42,9 @@
                     <input type="text" class="form-control" th:field="*{proximitatGeografica}" required>
                 </div>
 
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-success">Guardar Canvis</button>
+                <div class="d-flex justify-content-between mt-4">
+                    <a th:href="@{/asistente/dashboard}" class="btn btn-secondary">Cancel·lar</a>
+                    <button type="submit" class="btn btn-success px-5">Guardar Canvis</button>
                 </div>
             </form>
 

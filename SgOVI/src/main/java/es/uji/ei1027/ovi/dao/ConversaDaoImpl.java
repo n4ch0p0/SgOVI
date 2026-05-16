@@ -48,8 +48,17 @@ public class ConversaDaoImpl implements ConversaDao {
 
     @Override
     public List<Conversa> getConversesByAp(String dniAp) {
-        String sql = "SELECT c.* FROM Conversa c JOIN assistentpersonal ap ON c.id_ap = ap.id_ap WHERE ap.dni = ? ORDER BY c.data_inici DESC";
-        List<Conversa> converses = jdbcTemplate.query(sql, (rs, rowNum) -> mapejarConversa(rs), dniAp);
+        String sql = "SELECT c.*, u.nom AS nom_usuari, u.cognoms AS cognoms_usuari " +
+                "FROM Conversa c " +
+                "JOIN assistentpersonal ap ON c.id_ap = ap.id_ap " +
+                "JOIN aprequest r ON c.id_request = r.id_request " +
+                "JOIN usuarioovi u ON r.id_usuario = u.id_usuario " +
+                "WHERE ap.dni = ? ORDER BY c.data_inici DESC";
+
+        List<Conversa> converses = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Conversa c = mapejarConversa(rs);
+            return c;
+        }, dniAp);
 
         // BUCLE: Rellenamos los mensajes de cada conversación
         for (Conversa c : converses) {

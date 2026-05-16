@@ -6,7 +6,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class AsistenteDaoImpl implements AsistenteDao {
@@ -95,5 +97,16 @@ public class AsistenteDaoImpl implements AsistenteDao {
         a.setEstat(rs.getString("estat"));
         a.setMotiuRebuig(rs.getString("motiu_rebuig"));
         return a;
+    }
+
+    @Override
+    public Map<String, String> obtenerMapaNombresAsistentes() {
+        return jdbcTemplate.query("SELECT dni, nom, cognoms FROM AssistentPersonal", rs -> {
+            Map<String, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(rs.getString("dni"), rs.getString("nom") + " " + rs.getString("cognoms"));
+            }
+            return map;
+        });
     }
 }

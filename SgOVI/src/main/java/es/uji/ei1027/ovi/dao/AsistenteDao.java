@@ -2,6 +2,7 @@ package es.uji.ei1027.ovi.dao;
 
 import es.uji.ei1027.ovi.model.AssistentPersonal;
 import java.util.List;
+import java.util.Map;
 
 public interface AsistenteDao {
     void addAsistente(AssistentPersonal asistente);
@@ -16,4 +17,5 @@ public interface AsistenteDao {
     void updateEstadoAsistente(String dni, boolean aceptado);
 
     List<AssistentPersonal> getCandidatosAdecuados(String tipus);
+    Map<String, String> obtenerMapaNombresAsistentes();
 }

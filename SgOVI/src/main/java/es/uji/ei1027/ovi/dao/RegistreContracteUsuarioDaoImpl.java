@@ -6,7 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuarioDao {
@@ -20,7 +22,8 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
 
     @Override
     public List<RegistreContracteUsuarioOvi> getContractesByUsuario(String dniUsuario) {
-        String sql = "SELECT c.id_contracte, ap.dni AS dni_assistent, c.fecha_inici, c.fecha_fin, c.pdf_path " +
+        String sql = "SELECT c.id_contracte, ap.dni AS dni_assistent, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, c.fecha_inici, c.fecha_fin, c.pdf_path "
+                +
                 "FROM RegistreContracte c " +
                 "JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap " +
                 "JOIN APRequest r ON c.id_request = r.id_request " +
@@ -31,8 +34,10 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
             RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
             c.setId(rs.getInt("id_contracte"));
             c.setDniAsistente(rs.getString("dni_assistent"));
-            if (rs.getDate("fecha_inici") != null) c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
-            if (rs.getDate("fecha_fin") != null) c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
+            if (rs.getDate("fecha_inici") != null)
+                c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
+            if (rs.getDate("fecha_fin") != null)
+                c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
 
             c.setEstat("Actiu");
             c.setPdfPath(rs.getString("pdf_path"));
@@ -46,7 +51,8 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
         String sqlInsert = "INSERT INTO RegistreContracte (id_request, id_ap, fecha_inici, fecha_fin, pdf_path) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlInsert, idRequest, idAp, fechaInici, fechaFin, pdfPath);
 
-        // 2. Actualitzem l'estat de la petició perquè ja no aparega com "Aprovada" sinó tancada
+        // 2. Actualitzem l'estat de la petició perquè ja no aparega com "Aprovada" sinó
+        // tancada
         String sqlUpdate = "UPDATE APRequest SET estat = 'Tancada_Contracte'::estat_apr WHERE id_request = ?";
         jdbcTemplate.update(sqlUpdate, idRequest);
     }
@@ -60,7 +66,8 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
             c.setId(rs.getInt("id_contracte"));
             c.setDniAsistente(rs.getString("dni_assistent"));
             c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
-            if (rs.getDate("fecha_fin") != null) c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
+            if (rs.getDate("fecha_fin") != null)
+                c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
             c.setPdfPath(rs.getString("pdf_path"));
             return c;
         }, id);
@@ -74,7 +81,8 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
 
     @Override
     public List<RegistreContracteUsuarioOvi> getTodosLosContractes() {
-        String sql = "SELECT c.id_contracte, u.dni AS dni_usuario, ap.dni AS dni_assistent, c.fecha_inici, c.fecha_fin " +
+        String sql = "SELECT c.id_contracte, u.dni AS dni_usuario, u.nom AS nom_usuari, u.cognoms AS cognoms_usuari, " +
+                "ap.dni AS dni_assistent, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, c.fecha_inici, c.fecha_fin " +
                 "FROM RegistreContracte c " +
                 "JOIN APRequest r ON c.id_request = r.id_request " +
                 "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario " +
@@ -83,13 +91,28 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
             c.setId(rs.getInt("id_contracte"));
+            c.setDniAsistente(rs.getString("dni_assistent"));
 
-            // Unim el DNI de l'assistent i del client per a la vista del tècnic
-            c.setDniAsistente(rs.getString("dni_assistent") + " (Client: " + rs.getString("dni_usuario") + ")");
-
-            if (rs.getDate("fecha_inici") != null) c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
-            if (rs.getDate("fecha_fin") != null) c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
+            if (rs.getDate("fecha_inici") != null)
+                c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
+            if (rs.getDate("fecha_fin") != null)
+                c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
             return c;
+        });
+    }
+
+    @Override
+    public Map<Integer, String> obtenerMapaNombresUsuariosPorContracte() {
+        String sql = "SELECT c.id_contracte, u.nom, u.cognoms " +
+                "FROM RegistreContracte c " +
+                "JOIN APRequest r ON c.id_request = r.id_request " +
+                "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario";
+        return jdbcTemplate.query(sql, rs -> {
+            Map<Integer, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(rs.getInt("id_contracte"), rs.getString("nom") + " " + rs.getString("cognoms"));
+            }
+            return map;
         });
     }
 }

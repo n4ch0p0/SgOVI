@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UsuarioDaoImpl implements UsuarioDao {
@@ -69,5 +71,16 @@ public class UsuarioDaoImpl implements UsuarioDao {
                     u.setMotiuRebuig(rs.getString("motiu_rebuig"));
                     return u;
                 });
+    }
+
+    @Override
+    public Map<String, String> obtenerMapaNombresUsuarios() {
+        return jdbcTemplate.query("SELECT dni, nom, cognoms FROM UsuarioOVI", rs -> {
+            Map<String, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(rs.getString("dni"), rs.getString("nom") + " " + rs.getString("cognoms"));
+            }
+            return map;
+        });
     }
 }

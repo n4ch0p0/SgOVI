@@ -3,11 +3,11 @@ package es.uji.ei1027.ovi.model;
 import java.time.LocalDate;
 
 public class ActivitatFormacio {
-    private int id;              // PK
-    private String dniFormador;  // FK: DNI del Formador responsable
+    private int id; // PK
+    private String dniFormador; // FK: DNI del Formador responsable
     private String titol;
     private LocalDate fecha;
-    private String tipus;        // formacio o divulgacio
+    private String tipus; // formacio o divulgacio
 
     public ActivitatFormacio() {
     }

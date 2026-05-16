@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
@@ -74,7 +75,8 @@ public class UsuarioController {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuario == null) return "redirect:/login";
 
-        model.addAttribute("registreContracteUsuarioOvis", oviService.getContractesUsuario(usuario.getDni()));
+        model.addAttribute("registreContracteUsuarioOvis", registreContracteUsuarioDao.getContractesByUsuario(usuario.getDni()));
+        model.addAttribute("mapaNomsAssistents", asistenteDao.obtenerMapaNombresAsistentes());
         return "usuario/list_contractes";
     }
 
@@ -139,6 +141,21 @@ public class UsuarioController {
         if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
         registreContracteUsuarioDao.updateContracte(id, LocalDate.parse(inici),
                 (fi != null && !fi.isEmpty()) ? LocalDate.parse(fi) : null);
+        return "redirect:/usuario/contractes";
+    }
+
+    @PostMapping("/contractes/add")
+    public String registrarContracte(@RequestParam("idRequest") int idRequest,
+                                     @RequestParam("idAp") int idAp,
+                                     @RequestParam("fechaInici") String fechaInici,
+                                     @RequestParam(value = "fechaFin", required = false) String fechaFin,
+                                     HttpSession session) {
+        if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
+
+        LocalDate inici = LocalDate.parse(fechaInici);
+        LocalDate fi = (fechaFin != null && !fechaFin.isEmpty()) ? LocalDate.parse(fechaFin) : null;
+
+        registreContracteUsuarioDao.addContracte(idRequest, idAp, inici, fi, null);
         return "redirect:/usuario/contractes";
     }
 }

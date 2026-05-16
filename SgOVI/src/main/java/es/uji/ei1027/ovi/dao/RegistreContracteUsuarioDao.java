@@ -3,6 +3,7 @@ package es.uji.ei1027.ovi.dao;
 import es.uji.ei1027.ovi.model.RegistreContracteUsuarioOvi;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface RegistreContracteUsuarioDao {
     List<RegistreContracteUsuarioOvi> getContractesByUsuario(String dniUsuario);
@@ -10,4 +11,5 @@ public interface RegistreContracteUsuarioDao {
     RegistreContracteUsuarioOvi getContracte(int id);
     void updateContracte(int id, LocalDate fechaInici, LocalDate fechaFin);
     List<RegistreContracteUsuarioOvi> getTodosLosContractes();
+    Map<Integer, String> obtenerMapaNombresUsuariosPorContracte();
 }

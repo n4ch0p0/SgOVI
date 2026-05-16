@@ -8,18 +8,43 @@ public class APRequest {
     private String estat; // En Revisio, Aprovada, Rebutjada, Finalitzada
 
     // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getDniUsuario() { return dniUsuario; }
-    public void setDniUsuario(String dniUsuario) { this.dniUsuario = dniUsuario; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getTipusServei() { return tipusServei; }
-    public void setTipusServei(String tipusServei) { this.tipusServei = tipusServei; }
+    public String getDniUsuario() {
+        return dniUsuario;
+    }
 
-    public String getPreferencies() { return preferencies; }
-    public void setPreferencies(String preferencies) { this.preferencies = preferencies; }
+    public void setDniUsuario(String dniUsuario) {
+        this.dniUsuario = dniUsuario;
+    }
 
-    public String getEstat() { return estat; }
-    public void setEstat(String estat) { this.estat = estat; }
+    public String getTipusServei() {
+        return tipusServei;
+    }
+
+    public void setTipusServei(String tipusServei) {
+        this.tipusServei = tipusServei;
+    }
+
+    public String getPreferencies() {
+        return preferencies;
+    }
+
+    public void setPreferencies(String preferencies) {
+        this.preferencies = preferencies;
+    }
+
+    public String getEstat() {
+        return estat;
+    }
+
+    public void setEstat(String estat) {
+        this.estat = estat;
+    }
 }

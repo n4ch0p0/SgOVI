@@ -30,7 +30,10 @@
                             <textarea id="preferencies" class="form-control" th:field="*{preferencies}" rows="3" placeholder="Horaris, tipus de suport..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-success w-100">Enviar Sol·licitud</button>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a th:href="@{/usuario/dashboard}" class="btn btn-secondary">Cancel·lar</a>
+                            <button type="submit" class="btn btn-success px-5">Enviar Sol·licitud</button>
+                        </div>
                     </form>
                 </div>
             </div>

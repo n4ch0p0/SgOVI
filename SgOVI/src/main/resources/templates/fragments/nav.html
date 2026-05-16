@@ -26,5 +26,20 @@
         </div>
     </div>
 </nav>
+
+<!-- Notificaciones Flash Globales -->
+<div th:if="${mensajeExito}" class="container mt-2 mb-3">
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-success" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><strong th:text="${mensajeExito}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tancar"></button>
+    </div>
+</div>
+<div th:if="${mensajeError}" class="container mt-2 mb-3">
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><strong th:text="${mensajeError}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tancar"></button>
+    </div>
+</div>
+
 </body>
 </html>

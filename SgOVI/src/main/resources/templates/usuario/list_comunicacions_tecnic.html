@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Xat amb el Tècnic - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-headset"></i> Comunicació amb el Tècnic</h2>
+        <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary">Tornar al Menú</a>
+    </div>
+
+    <!-- Botó per iniciar conversa si no en té cap -->
+    <div th:if="${#lists.isEmpty(converses)}" class="text-center">
+        <div class="alert alert-info shadow-sm">
+            <p class="mb-3"><strong>Sense converses:</strong> Encara no has contactat amb el tècnic de l'OVI.</p>
+            <form th:action="@{/conversa/tecnic/iniciar}" method="post">
+                <input type="hidden" name="dniUsuario" th:value="${session.usuarioLogueado.dni}">
+                <button type="submit" class="btn btn-dark"><i class="bi bi-chat-dots"></i> Iniciar Conversa amb el Tècnic</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:each="conv : ${converses}" class="card shadow-sm mb-5 border-dark">
+        <div class="card-header bg-dark text-white d-flex justify-content-between">
+            <span><i class="bi bi-shield-lock"></i> Xat amb el <strong>Tècnic OVI</strong></span>
+            <span class="badge bg-light text-dark" th:text="'Ref. ' + ${conv.idConversaTecnic}"></span>
+        </div>
+
+        <div class="card-body bg-white" style="max-height: 300px; overflow-y: auto;">
+            <div th:each="m : ${conv.missatges}" class="mb-2">
+                <div th:class="${m.emissor == 'Usuari'} ? 'text-end' : 'text-start'">
+                    <span th:class="${m.emissor == 'Usuari'} ? 'badge bg-primary p-2' : 'badge bg-dark p-2'"
+                          th:text="${m.textMissatge}"></span>
+                    <div class="text-muted small" th:text="${m.dataEnviament != null ? #temporals.format(m.dataEnviament, 'HH:mm') : ''}"></div>
+                </div>
+            </div>
+            <p th:if="${#lists.isEmpty(conv.missatges)}" class="text-center text-muted small">No hi ha missatges encara. Comença la conversa!</p>
+        </div>
+
+        <div class="card-footer bg-light">
+            <form th:action="@{/conversa/tecnic/enviar}" method="post" class="row g-2">
+                <input type="hidden" name="idConversaTecnic" th:value="${conv.idConversaTecnic}">
+                <div class="col-md-10">
+                    <input type="text" name="mensaje" class="form-control" required placeholder="Escriu ací el teu missatge...">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark w-100"><i class="bi bi-send"></i> Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -10,24 +10,55 @@ public class RegistreContracteUsuarioOvi {
     private String estat;
     private String pdfPath;
 
-    public RegistreContracteUsuarioOvi() {}
+    public RegistreContracteUsuarioOvi() {
+    }
 
     // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getDniAsistente() { return dniAsistente; }
-    public void setDniAsistente(String dniAsistente) { this.dniAsistente = dniAsistente; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public LocalDate getDataInici() { return dataInici; }
-    public void setDataInici(LocalDate dataInici) { this.dataInici = dataInici; }
+    public String getDniAsistente() {
+        return dniAsistente;
+    }
 
-    public LocalDate getDataFi() { return dataFi; }
-    public void setDataFi(LocalDate dataFi) { this.dataFi = dataFi; }
+    public void setDniAsistente(String dniAsistente) {
+        this.dniAsistente = dniAsistente;
+    }
 
-    public String getEstat() { return estat; }
-    public void setEstat(String estat) { this.estat = estat; }
+    public LocalDate getDataInici() {
+        return dataInici;
+    }
 
-    public String getPdfPath() { return pdfPath; }
-    public void setPdfPath(String pdfPath) { this.pdfPath = pdfPath; }
+    public void setDataInici(LocalDate dataInici) {
+        this.dataInici = dataInici;
+    }
+
+    public LocalDate getDataFi() {
+        return dataFi;
+    }
+
+    public void setDataFi(LocalDate dataFi) {
+        this.dataFi = dataFi;
+    }
+
+    public String getEstat() {
+        return estat;
+    }
+
+    public void setEstat(String estat) {
+        this.estat = estat;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
 }

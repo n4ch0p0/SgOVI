@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ActivitatFormacioDaoImpl implements ActivitatFormacioDao {
@@ -28,11 +30,8 @@ public class ActivitatFormacioDaoImpl implements ActivitatFormacioDao {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ActivitatFormacio a = new ActivitatFormacio();
-
             a.setId(rs.getInt("id_actividad"));
-
             a.setDniFormador(String.valueOf(rs.getInt("id_formador")));
-
             a.setTitol(rs.getString("titol"));
 
             // Como la BD devuelve fecha y hora (Timestamp), la convertimos a LocalDate
@@ -45,12 +44,25 @@ public class ActivitatFormacioDaoImpl implements ActivitatFormacioDao {
             return a;
         });
     }
+
     @Override
     public void inscriureAsistente(int idActividad, String dniAsistente) {
-        // Insertamos la actividad, buscamos el id_ap a partir del DNI, y ponemos assistencia a false por defecto
+        // Insertamos la actividad, buscamos el id_ap a partir del DNI, y ponemos
+        // assistencia a false por defecto
         String sql = "INSERT INTO assistenciaformacio (id_actividad, id_ap, assistencia) " +
                 "VALUES (?, (SELECT id_ap FROM assistentpersonal WHERE dni = ?), false)";
 
         jdbcTemplate.update(sql, idActividad, dniAsistente);
+    }
+
+    @Override
+    public Map<String, String> obtenerMapaNombresFormadores() {
+        return jdbcTemplate.query("SELECT id_formador, nombre FROM formador", rs -> {
+            Map<String, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(String.valueOf(rs.getInt("id_formador")), rs.getString("nombre"));
+            }
+            return map;
+        });
     }
 }

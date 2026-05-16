@@ -12,23 +12,54 @@ public class Conversa {
     private String nomAp;
     private List<Missatge> missatges = new ArrayList<>();
 
-    public Conversa() {}
+    public Conversa() {
+    }
 
-    public int getIdConversa() { return idConversa; }
-    public void setIdConversa(int idConversa) { this.idConversa = idConversa; }
+    public int getIdConversa() {
+        return idConversa;
+    }
 
-    public int getIdRequest() { return idRequest; }
-    public void setIdRequest(int idRequest) { this.idRequest = idRequest; }
+    public void setIdConversa(int idConversa) {
+        this.idConversa = idConversa;
+    }
 
-    public int getIdAp() { return idAp; }
-    public void setIdAp(int idAp) { this.idAp = idAp; }
+    public int getIdRequest() {
+        return idRequest;
+    }
 
-    public LocalDateTime getDataInici() { return dataInici; }
-    public void setDataInici(LocalDateTime dataInici) { this.dataInici = dataInici; }
+    public void setIdRequest(int idRequest) {
+        this.idRequest = idRequest;
+    }
 
-    public String getNomAp() { return nomAp; }
-    public void setNomAp(String nomAp) { this.nomAp = nomAp; }
+    public int getIdAp() {
+        return idAp;
+    }
 
-    public List<Missatge> getMissatges() { return missatges; }
-    public void setMissatges(List<Missatge> missatges) { this.missatges = missatges; }
+    public void setIdAp(int idAp) {
+        this.idAp = idAp;
+    }
+
+    public LocalDateTime getDataInici() {
+        return dataInici;
+    }
+
+    public void setDataInici(LocalDateTime dataInici) {
+        this.dataInici = dataInici;
+    }
+
+    public String getNomAp() {
+        return nomAp;
+    }
+
+    public void setNomAp(String nomAp) {
+        this.nomAp = nomAp;
+    }
+
+    public List<Missatge> getMissatges() {
+        return missatges;
+    }
+
+    public void setMissatges(List<Missatge> missatges) {
+        this.missatges = missatges;
+    }
 }
