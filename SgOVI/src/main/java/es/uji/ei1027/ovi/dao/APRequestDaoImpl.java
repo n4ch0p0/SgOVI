@@ -29,8 +29,7 @@ public class APRequestDaoImpl implements APRequestDao {
 
     @Override
     public List<APRequest> getRequestsByUsuario(String dniUsuario) {
-        // Juntamos aprequest con usuarioovi para recuperar el DNI y meterlo en nuestro objeto Java
-        String sql = "SELECT a.*, u.dni as dni_usuari, u.nom as nom_usuari, u.cognoms as cognoms_usuari FROM aprequest a " +
+        String sql = "SELECT a.*, u.dni as dni_usuari FROM aprequest a " +
                 "JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
                 "WHERE u.dni = ?";
 
@@ -39,7 +38,6 @@ public class APRequestDaoImpl implements APRequestDao {
                     APRequest r = new APRequest();
                     r.setId(rs.getInt("id_request"));
                     r.setDniUsuario(rs.getString("dni_usuari"));
-                    r.setNomUsuario(rs.getString("nom_usuari") + " " + rs.getString("cognoms_usuari"));
                     r.setTipusServei(rs.getString("tipusservei"));
                     r.setPreferencies(rs.getString("preferencies"));
                     r.setEstat(rs.getString("estat"));
@@ -49,7 +47,7 @@ public class APRequestDaoImpl implements APRequestDao {
 
     @Override
     public List<APRequest> getRequestsPendientes() {
-        String sql = "SELECT a.*, u.dni as dni_usuari, u.nom as nom_usuari, u.cognoms as cognoms_usuari FROM aprequest a " +
+        String sql = "SELECT a.*, u.dni as dni_usuari FROM aprequest a " +
                 "JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
                 "WHERE a.estat = 'Revisio'";
 
@@ -58,7 +56,6 @@ public class APRequestDaoImpl implements APRequestDao {
                     APRequest r = new APRequest();
                     r.setId(rs.getInt("id_request"));
                     r.setDniUsuario(rs.getString("dni_usuari"));
-                    r.setNomUsuario(rs.getString("nom_usuari") + " " + rs.getString("cognoms_usuari"));
                     r.setTipusServei(rs.getString("tipusservei"));
                     r.setPreferencies(rs.getString("preferencies"));
                     r.setEstat(rs.getString("estat"));
@@ -87,7 +84,8 @@ public class APRequestDaoImpl implements APRequestDao {
 
     @Override
     public Map<Integer, String> obtenerMapaNombresRequests() {
-        String sql = "SELECT r.id_request, u.nom, u.cognoms FROM aprequest r JOIN usuarioovi u ON r.id_usuario = u.dni";
+        // CORREGIDO: JOIN usando claves equivalentes (id_usuario con id_usuario)
+        String sql = "SELECT r.id_request, u.nom, u.cognoms FROM aprequest r JOIN usuarioovi u ON r.id_usuario = u.id_usuario";
         return jdbcTemplate.query(sql, rs -> {
             Map<Integer, String> map = new HashMap<>();
             while (rs.next()) {

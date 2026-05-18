@@ -23,14 +23,12 @@
         </thead>
         <tbody>
         <tr th:each="cand : ${candidatos}">
-            <td th:text="${cand.nom} + ' (' + ${cand.dni} + ')'"></td>
+            <td th:text="${cand.nom}"></td>
             <td th:text="${cand.proximitatGeografica}" class="fw-bold text-success"></td>
             <td th:text="${cand.experienciaPrevia}"></td>
             <td th:text="${cand.formacioAcademica}"></td>
             <td>
                 <button type="button" class="btn btn-sm btn-primary"
-                        th:data-idrequest="${peticion.id}"
-                        th:data-dniap="${cand.dni}"
                         th:data-nomap="${cand.nom}"
                         th:data-zona="${cand.proximitatGeografica}"
                         onclick="mostrarModalConversa(this)">

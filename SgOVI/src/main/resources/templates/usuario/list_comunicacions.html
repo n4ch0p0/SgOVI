@@ -16,7 +16,6 @@
     <div th:each="conv : ${converses}" class="card shadow-sm mb-5 border-primary">
         <div class="card-header bg-primary text-white d-flex justify-content-between">
             <span><i class="bi bi-person-fill"></i> Xat amb: <strong th:text="${conv.nomAp}"></strong></span>
-            <span class="badge bg-light text-dark">Sol·licitud #<span th:text="${conv.idRequest}"></span></span>
         </div>
 
         <div class="card-body bg-white" style="max-height: 300px; overflow-y: auto;">

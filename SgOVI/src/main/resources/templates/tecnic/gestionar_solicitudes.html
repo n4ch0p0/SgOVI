@@ -31,13 +31,13 @@
               <td>
                 <div class="d-flex gap-2">
                   <button type="button" class="btn btn-sm btn-success" th:data-id="${req.id}"
-                    th:data-nom="${req.nomUsuario}" th:data-tipus="${req.tipusServei}"
-                    th:data-pref="${req.preferencies}" onclick="mostrarModalAprovar(this)">
+                          th:data-nom="${mapaNomsUsuaris[req.dniUsuario]}" th:data-tipus="${req.tipusServei}"
+                          th:data-pref="${req.preferencies}" onclick="mostrarModalAprovar(this)">
                     <i class="bi bi-check-circle"></i> Aprovar
                   </button>
                   <button type="button" class="btn btn-sm btn-danger" th:data-id="${req.id}"
-                    th:data-nom="${req.nomUsuario}" th:data-tipus="${req.tipusServei}"
-                    th:data-pref="${req.preferencies}" onclick="mostrarModalRebutjar(this)">
+                          th:data-nom="${mapaNomsUsuaris[req.dniUsuario]}" th:data-tipus="${req.tipusServei}"
+                          th:data-pref="${req.preferencies}" onclick="mostrarModalRebutjar(this)">
                     <i class="bi bi-x-circle"></i> Rebutjar
                   </button>
                 </div>

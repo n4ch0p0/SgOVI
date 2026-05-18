@@ -67,8 +67,9 @@ public class ConversaController {
 
     @PostMapping("/add")
     public String iniciarConversa(@RequestParam("idRequest") int idRequest,
-            @RequestParam("dniAp") String dniAp,
-            HttpSession session) {
+                                  @RequestParam("dniAp") String dniAp,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
         if (session.getAttribute("usuarioLogueado") == null)
             return "redirect:/login";
 
@@ -84,8 +85,9 @@ public class ConversaController {
 
     @PostMapping("/enviar")
     public String enviarMissatge(@RequestParam("idConversa") int idConversa,
-            @RequestParam("mensaje") String texto,
-            HttpSession session) {
+                                 @RequestParam("mensaje") String texto,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
         Missatge m = new Missatge();
         m.setIdConversa(idConversa);
         m.setTextMissatge(texto);
@@ -128,7 +130,8 @@ public class ConversaController {
 
     @PostMapping("/tecnic/iniciar")
     public String iniciarConversaTecnic(@RequestParam("dniUsuario") String dniUsuario,
-            HttpSession session) {
+                                        HttpSession session,
+                                        RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
         // Tant el tècnic com l'usuari poden iniciar la conversa
         if (session.getAttribute("tecnicLogueado") == null && session.getAttribute("usuarioLogueado") == null) {
             return "redirect:/login";
@@ -144,8 +147,9 @@ public class ConversaController {
 
     @PostMapping("/tecnic/enviar")
     public String enviarMissatgeTecnic(@RequestParam("idConversaTecnic") int idConversaTecnic,
-            @RequestParam("mensaje") String texto,
-            HttpSession session) {
+                                       @RequestParam("mensaje") String texto,
+                                       HttpSession session,
+                                       RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
         MissatgeTecnic m = new MissatgeTecnic();
         m.setIdConversaTecnic(idConversaTecnic);
         m.setTextMissatge(texto);

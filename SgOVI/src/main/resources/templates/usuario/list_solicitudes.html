@@ -11,16 +11,12 @@
     <table class="table table-bordered">
         <thead class="table-light">
         <tr>
-            <th>Ref.</th>
-            <th>Tipus Servei</th>
             <th>Preferències</th>
             <th>Estat</th>
             <th>Accions</th> </tr>
         </thead>
         <tbody>
         <tr th:each="req : ${solicitudes}">
-            <td th:text="${req.id}" class="fw-bold"></td>
-            <td th:text="${req.tipusServei}"></td>
             <td th:text="${req.preferencies}"></td>
             <td><span class="badge bg-info text-dark" th:text="${req.estat}"></span></td>
             <td>

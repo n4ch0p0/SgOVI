@@ -14,7 +14,7 @@
                     <form th:action="@{/usuario/solicitudes/add}" th:object="${apRequest}" method="post">
                         <div class="mb-3">
                             <label for="dniUsuario" class="form-label">El teu DNI</label>
-                            <input type="text" id="dniUsuario" class="form-control" th:field="*{dniUsuario}" required placeholder="Ex: 12345678A">
+                            <input type="text" id="dniUsuario" class="form-control" th:field="*{dniUsuario}" required readonly >
                         </div>
 
                         <div class="mb-3">
