@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,13 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    // Obté el jdbcTemplate a partir del Data Source
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /* Afegeix l'assistent a la base de dades */
     @Override
     public void addAsistente(AssistentPersonal a) {
         String sql = "INSERT INTO AssistentPersonal (dni, nom, cognoms, email, telefono, contrasenya, tipus, formacioAcademica, experienciaPrevia, proximitatGeografica, actiu, estat, motiu_rebuig) " +
@@ -31,6 +34,7 @@ public class AsistenteDaoImpl implements AsistenteDao {
         );
     }
 
+    /* Actualitza els atributs de l'assistent */
     @Override
     public void updateAsistente(AssistentPersonal a) {
         String sql = "UPDATE AssistentPersonal SET formacioAcademica = ?, experienciaPrevia = ?, proximitatGeografica = ?, actiu = ? WHERE dni = ?";
@@ -41,31 +45,46 @@ public class AsistenteDaoImpl implements AsistenteDao {
     public void updateEstados(String dni, boolean estadoAceptado, boolean actiu, boolean estatAcceptat) {
     }
 
+    /* Obté l'assistent amb el dni donat. Torna null si no existeix. */
     @Override
     public AssistentPersonal getAsistente(String dni) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM AssistentPersonal WHERE dni = ?",
-                    (rs, rowNum) -> mapejarAsistente(rs), dni);
+                    new AssistentPersonalRowMapper(), dni);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
+    /* Obté tots els assistents. Torna una llista buida si no n'hi ha cap. */
     @Override
     public List<AssistentPersonal> getAsistentes() {
-        return jdbcTemplate.query("SELECT * FROM AssistentPersonal", (rs, rowNum) -> mapejarAsistente(rs));
+        try {
+            return jdbcTemplate.query("SELECT * FROM AssistentPersonal",
+                    new AssistentPersonalRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<AssistentPersonal>();
+        }
     }
 
     @Override
     public List<AssistentPersonal> getAsistentesByTipus(String tipus) {
-        return jdbcTemplate.query("SELECT * FROM AssistentPersonal WHERE tipus=(?)::tipus_ap",
-                (rs, rowNum) -> mapejarAsistente(rs), tipus);
+        try {
+            return jdbcTemplate.query("SELECT * FROM AssistentPersonal WHERE tipus=(?)::tipus_ap",
+                    new AssistentPersonalRowMapper(), tipus);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<AssistentPersonal>();
+        }
     }
 
     @Override
     public List<AssistentPersonal> getAsistentesPendientes() {
-        return jdbcTemplate.query("SELECT * FROM AssistentPersonal WHERE estat = 'Pendent'",
-                (rs, rowNum) -> mapejarAsistente(rs));
+        try {
+            return jdbcTemplate.query("SELECT * FROM AssistentPersonal WHERE estat = 'Pendent'",
+                    new AssistentPersonalRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<AssistentPersonal>();
+        }
     }
 
     @Override
@@ -77,26 +96,11 @@ public class AsistenteDaoImpl implements AsistenteDao {
     @Override
     public List<AssistentPersonal> getCandidatosAdecuados(String tipus) {
         String sql = "SELECT * FROM AssistentPersonal WHERE actiu = true AND estat = 'Acceptat' AND tipus = (?)::tipus_ap";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> mapejarAsistente(rs), tipus);
-    }
-
-    // Mètode privat per no repetir el mapping
-    private AssistentPersonal mapejarAsistente(java.sql.ResultSet rs) throws java.sql.SQLException {
-        AssistentPersonal a = new AssistentPersonal();
-        a.setDni(rs.getString("dni"));
-        a.setNom(rs.getString("nom"));
-        a.setCognoms(rs.getString("cognoms"));
-        a.setEmail(rs.getString("email"));
-        a.setTelefono(rs.getInt("telefono"));
-        a.setContrasenya(rs.getString("contrasenya"));
-        a.setTipus(rs.getString("tipus"));
-        a.setFormacioAcademica(rs.getString("formacioAcademica"));
-        a.setExperienciaPrevia(rs.getString("experienciaPrevia"));
-        a.setProximitatGeografica(rs.getString("proximitatGeografica"));
-        a.setActiu(rs.getBoolean("actiu"));
-        a.setEstat(rs.getString("estat"));
-        a.setMotiuRebuig(rs.getString("motiu_rebuig"));
-        return a;
+        try {
+            return jdbcTemplate.query(sql, new AssistentPersonalRowMapper(), tipus);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<AssistentPersonal>();
+        }
     }
 
     @Override

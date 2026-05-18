@@ -40,5 +40,14 @@ public class AssistenciaFormacio {
     public void setUrl_certificat(String url_certificat) {
         this.url_certificat = url_certificat;
     }
+
+    @Override
+    public String toString() {
+        return "AssistenciaFormacio{idActivitat='" + idActivitat + "'" +
+                ", dniPap='" + dniPap + "'" +
+                ", assistencia='" + assistencia + "'" +
+                ", url_certificat='" + url_certificat + "'" +
+                "}";
+    }
 }
 

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{fragments/head :: head($CONTENT_TITLE)}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<main layout:fragment="content">
+    <!-- El contingut de cada pàgina s'insertarà ací -->
+</main>
+
+<footer class="container text-center text-muted mt-5 mb-3">
+    <hr>
+    <p>&copy; 2025 OVI Castelló - Oficina de Vida Independent</p>
+</footer>
+
+</body>
+</html>

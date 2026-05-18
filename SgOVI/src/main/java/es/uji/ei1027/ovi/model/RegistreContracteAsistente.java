@@ -51,4 +51,14 @@ public class RegistreContracteAsistente {
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
     }
+
+    @Override
+    public String toString() {
+        return "RegistreContracteAsistente{idSeleccion='" + idSeleccion + "'" +
+                ", fechaInici='" + fechaInici + "'" +
+                ", fechaFin='" + fechaFin + "'" +
+                ", dniUsuario='" + dniUsuario + "'" +
+                ", pdfPath='" + pdfPath + "'" +
+                "}";
+    }
 }

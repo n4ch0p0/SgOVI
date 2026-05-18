@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,61 +17,46 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    // Obté el jdbcTemplate a partir del Data Source
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /* Afegeix l'usuari a la base de dades */
     @Override
     public void addUsuario(UsuarioOVI u) {
         jdbcTemplate.update("INSERT INTO UsuarioOVI (dni, nom, cognoms, email, telefono, contrasenya, consentimentInformat, estat, motiu_rebuig) VALUES(?, ?, ?, ?, ?, ?, ?, 'Pendent'::estat_validacio, NULL)",
                 u.getDni(), u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), u.getContrasenya(), u.getConsentimentInformat());
     }
 
+    /* Actualitza els atributs de l'usuari (excepte el dni, que és la clau primària) */
     @Override
     public void updateUsuario(UsuarioOVI u) {
         jdbcTemplate.update("UPDATE UsuarioOVI SET nom=?, cognoms=?, email=?, telefono=?, contrasenya=?, consentimentInformat=? WHERE dni=?",
                 u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), u.getContrasenya(), u.getConsentimentInformat(), u.getDni());
     }
 
+    /* Obté l'usuari amb el dni donat. Torna null si no existeix. */
     @Override
     public UsuarioOVI getUsuario(String dni) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM UsuarioOVI WHERE dni=?",
-                    (rs, rowNum) -> {
-                        UsuarioOVI u = new UsuarioOVI();
-                        u.setDni(rs.getString("dni"));
-                        u.setNom(rs.getString("nom"));
-                        u.setCognoms(rs.getString("cognoms"));
-                        u.setEmail(rs.getString("email"));
-                        u.setTelefono(rs.getInt("telefono"));
-                        u.setContrasenya(rs.getString("contrasenya"));
-                        u.setConsentimentInformat(rs.getBoolean("consentimentInformat"));
-                        u.setEstat(rs.getString("estat"));
-                        u.setMotiuRebuig(rs.getString("motiu_rebuig"));
-                        return u;
-                    }, dni);
+                    new UsuarioOVIRowMapper(), dni);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
+    /* Obté tots els usuaris. Torna una llista buida si no n'hi ha cap. */
     @Override
     public List<UsuarioOVI> getUsuarios() {
-        return jdbcTemplate.query("SELECT * FROM UsuarioOVI",
-                (rs, rowNum) -> {
-                    UsuarioOVI u = new UsuarioOVI();
-                    u.setDni(rs.getString("dni"));
-                    u.setNom(rs.getString("nom"));
-                    u.setCognoms(rs.getString("cognoms"));
-                    u.setEmail(rs.getString("email"));
-                    u.setTelefono(rs.getInt("telefono"));
-                    u.setContrasenya(rs.getString("contrasenya"));
-                    u.setConsentimentInformat(rs.getBoolean("consentimentInformat"));
-                    u.setEstat(rs.getString("estat"));
-                    u.setMotiuRebuig(rs.getString("motiu_rebuig"));
-                    return u;
-                });
+        try {
+            return jdbcTemplate.query("SELECT * FROM UsuarioOVI",
+                    new UsuarioOVIRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<UsuarioOVI>();
+        }
     }
 
     @Override

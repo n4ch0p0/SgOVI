@@ -27,4 +27,13 @@ public class ConversaTecnic {
 
     public List<MissatgeTecnic> getMissatges() { return missatges; }
     public void setMissatges(List<MissatgeTecnic> missatges) { this.missatges = missatges; }
+
+    @Override
+    public String toString() {
+        return "ConversaTecnic{idConversaTecnic='" + idConversaTecnic + "'" +
+                ", dniUsuario='" + dniUsuario + "'" +
+                ", dataInici='" + dataInici + "'" +
+                ", nomUsuario='" + nomUsuario + "'" +
+                "}";
+    }
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Llistat Usuaris - OVI')}"></head>
 <body class="bg-light">
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
-<div class="container mt-4">
+<main class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="bi bi-people"></i> Llistat Complet d'Usuaris OVI</h2>
         <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary">Tornar al Menú</a>
@@ -33,6 +33,6 @@
         </tr>
         </tbody>
     </table>
-</div>
+</main>
 </body>
 </html>

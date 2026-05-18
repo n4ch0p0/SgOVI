@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="logininfo" class="loggeduser">
+    <!-- Usuari OVI autenticat -->
+    <span th:if="${session.usuarioLogueado != null}">
+        <i class="bi bi-person-circle"></i>
+        <span th:text="${session.usuarioLogueado.nom + ' ' + session.usuarioLogueado.cognoms}">Usuari</span>
+        | <a th:href="@{/logout}" class="text-danger">Tancar sessió</a>
+    </span>
+    <!-- Assistent autenticat -->
+    <span th:if="${session.asistenteLogueado != null}">
+        <i class="bi bi-person-badge"></i>
+        <span th:text="${session.asistenteLogueado.nom + ' ' + session.asistenteLogueado.cognoms}">Assistent</span>
+        | <a th:href="@{/logout}" class="text-danger">Tancar sessió</a>
+    </span>
+    <!-- Tècnic autenticat -->
+    <span th:if="${session.tecnicLogueado != null}">
+        <i class="bi bi-shield-check"></i> Tècnic OVI
+        | <a th:href="@{/logout}" class="text-danger">Tancar sessió</a>
+    </span>
+    <!-- No autenticat -->
+    <span th:if="${session.usuarioLogueado == null and session.asistenteLogueado == null and session.tecnicLogueado == null}">
+        <a th:href="@{/login}">Inicia sessió</a>
+    </span>
+</div>
+</body>
+</html>

@@ -47,4 +47,14 @@ public class APRequest {
     public void setEstat(String estat) {
         this.estat = estat;
     }
+
+    @Override
+    public String toString() {
+        return "APRequest{id='" + id + "'" +
+                ", dniUsuario='" + dniUsuario + "'" +
+                ", tipusServei='" + tipusServei + "'" +
+                ", preferencies='" + preferencies + "'" +
+                ", estat='" + estat + "'" +
+                "}";
+    }
 }

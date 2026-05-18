@@ -61,4 +61,15 @@ public class RegistreContracteUsuarioOvi {
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
     }
+
+    @Override
+    public String toString() {
+        return "RegistreContracteUsuarioOvi{id='" + id + "'" +
+                ", dniAsistente='" + dniAsistente + "'" +
+                ", dataInici='" + dataInici + "'" +
+                ", dataFi='" + dataFi + "'" +
+                ", estat='" + estat + "'" +
+                ", pdfPath='" + pdfPath + "'" +
+                "}";
+    }
 }

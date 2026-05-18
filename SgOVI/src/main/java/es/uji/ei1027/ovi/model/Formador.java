@@ -22,4 +22,11 @@ public class Formador {
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
     }
+
+    @Override
+    public String toString() {
+        return "Formador{nombre='" + nombre + "'" +
+                ", especialidad='" + especialidad + "'" +
+                "}";
+    }
 }

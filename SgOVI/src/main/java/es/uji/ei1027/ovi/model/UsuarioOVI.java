@@ -39,4 +39,18 @@ public class UsuarioOVI {
 
     public String getMotiuRebuig() { return motiuRebuig; }
     public void setMotiuRebuig(String motiuRebuig) { this.motiuRebuig = motiuRebuig; }
+
+    @Override
+    public String toString() {
+        return "UsuarioOVI{dni='" + dni + "'" +
+                ", nom='" + nom + "'" +
+                ", cognoms='" + cognoms + "'" +
+                ", email='" + email + "'" +
+                ", telefono='" + telefono + "'" +
+                ", contrasenya='" + contrasenya + "'" +
+                ", consentimentInformat='" + consentimentInformat + "'" +
+                ", estat='" + estat + "'" +
+                ", motiuRebuig='" + motiuRebuig + "'" +
+                "}";
+    }
 }

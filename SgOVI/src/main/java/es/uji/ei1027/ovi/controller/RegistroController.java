@@ -7,6 +7,7 @@ import es.uji.ei1027.ovi.model.UsuarioOVI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -25,7 +26,7 @@ public class RegistroController {
         return "public/registro_opciones"; //
     }
 
-    // Formulario de Usuario
+    // Formulari d'Usuari
     @GetMapping("/usuario")
     public String formUsuario(Model model) {
         model.addAttribute("usuario", new UsuarioOVI());
@@ -33,12 +34,18 @@ public class RegistroController {
     }
 
     @PostMapping("/usuario/add")
-    public String addUsuario(@ModelAttribute("usuario") UsuarioOVI usuario) {
+    public String addUsuario(@ModelAttribute("usuario") UsuarioOVI usuario,
+                             BindingResult bindingResult) {
+        UsuarioValidator usuarioValidator = new UsuarioValidator();
+        usuarioValidator.validate(usuario, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "public/registro_usuarios";
+        }
         usuarioDao.addUsuario(usuario);
         return "redirect:/login?registrado=true";
     }
 
-    // Formulario de Asistente
+    // Formulari d'Assistent
     @GetMapping("/asistente")
     public String formAsistente(Model model) {
         model.addAttribute("asistente", new AssistentPersonal());
@@ -46,10 +53,14 @@ public class RegistroController {
     }
 
     @PostMapping("/asistente/add")
-    public String addAsistente(@ModelAttribute("asistente") AssistentPersonal asistente) {
-        // Guardamos en la tabla con el campo DNI
+    public String addAsistente(@ModelAttribute("asistente") AssistentPersonal asistente,
+                               BindingResult bindingResult) {
+        AsistenteValidator asistenteValidator = new AsistenteValidator();
+        asistenteValidator.validate(asistente, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "public/registro_asistente";
+        }
         asistenteDao.addAsistente(asistente);
-
         return "redirect:/login?registrado=true";
     }
 }

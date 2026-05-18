@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
 <body>
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
@@ -14,8 +14,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
 
+                <!-- Logininfo fragment: mostra el nom de l'usuari autenticat -->
+                <li class="nav-item d-flex align-items-center">
+                    <div th:replace="~{fragments/logininfo :: logininfo}">...</div>
+                </li>
+
                 <li class="nav-item" th:if="${session.usuarioLogueado == null and session.asistenteLogueado == null and session.tecnicLogueado == null}">
-                    <a class="btn btn-outline-light ms-2" href="/registro/seleccion">Registrar-se</a>
+                    <a class="btn btn-outline-light ms-2" th:href="@{/registro/seleccion}">Registrar-se</a>
                 </li>
 
                 <li class="nav-item" th:if="${session.usuarioLogueado != null or session.asistenteLogueado != null or session.tecnicLogueado != null}">
@@ -27,7 +32,7 @@
     </div>
 </nav>
 
-<!-- Notificaciones Flash Globales -->
+<!-- Notificacions Flash Globals -->
 <div th:if="${mensajeExito}" class="container mt-2 mb-3">
     <div class="alert alert-success alert-dismissible fade show shadow-sm border-success" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i><strong th:text="${mensajeExito}"></strong>

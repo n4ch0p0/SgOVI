@@ -62,4 +62,14 @@ public class Conversa {
     public void setMissatges(List<Missatge> missatges) {
         this.missatges = missatges;
     }
+
+    @Override
+    public String toString() {
+        return "Conversa{idConversa='" + idConversa + "'" +
+                ", idRequest='" + idRequest + "'" +
+                ", idAp='" + idAp + "'" +
+                ", dataInici='" + dataInici + "'" +
+                ", nomAp='" + nomAp + "'" +
+                "}";
+    }
 }

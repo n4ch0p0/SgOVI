@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Error - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+<main class="container mt-5">
+    <div th:if="${#strings.equals(errorName, 'Error inesperat')}" class="alert alert-warning shadow-sm" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorName}">Error</span></h4>
+        <hr>
+        <p th:text="${message}">Missatge d'error</p>
+        <a th:href="@{/}" class="btn btn-warning mt-2">Tornar a l'inici</a>
+    </div>
+    <div th:unless="${#strings.equals(errorName, 'Error inesperat')}" class="alert alert-info shadow-sm" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i><span th:text="${errorName}">Error</span></h4>
+        <hr>
+        <p th:text="${message}">Missatge d'error</p>
+        <a th:href="@{/}" class="btn btn-info mt-2">Tornar a l'inici</a>
+    </div>
+</main>
+</body>
+</html>

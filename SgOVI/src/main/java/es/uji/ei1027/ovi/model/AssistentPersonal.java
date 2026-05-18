@@ -55,4 +55,22 @@ public class AssistentPersonal {
 
     public String getMotiuRebuig() { return motiuRebuig; }
     public void setMotiuRebuig(String motiuRebuig) { this.motiuRebuig = motiuRebuig; }
+
+    @Override
+    public String toString() {
+        return "AssistentPersonal{dni='" + dni + "'" +
+                ", nom='" + nom + "'" +
+                ", cognoms='" + cognoms + "'" +
+                ", email='" + email + "'" +
+                ", telefono='" + telefono + "'" +
+                ", contrasenya='" + contrasenya + "'" +
+                ", tipus='" + tipus + "'" +
+                ", formacioAcademica='" + formacioAcademica + "'" +
+                ", experienciaPrevia='" + experienciaPrevia + "'" +
+                ", proximitatGeografica='" + proximitatGeografica + "'" +
+                ", actiu='" + actiu + "'" +
+                ", estat='" + estat + "'" +
+                ", motiuRebuig='" + motiuRebuig + "'" +
+                "}";
+    }
 }

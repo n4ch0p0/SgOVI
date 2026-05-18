@@ -1,48 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Registre Usuari - OVI')}"></head>
 <body>
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
-<div class="container mt-5">
+<main class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
       <div class="card shadow-sm border-primary">
         <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Registre de Nou Usuari OVI</h4>
+          <h1 class="h4 mb-0">Registre de Nou Usuari OVI</h1>
         </div>
         <div class="card-body">
           <form th:action="@{/registro/usuario/add}" th:object="${usuario}" method="post">
             <div class="mb-3">
-              <label class="form-label">DNI</label>
-              <input type="text" class="form-control" th:field="*{dni}" pattern="[0-9]{8}[A-Za-z]{1}" minlength="9" maxlength="9" required>
+              <label for="dni" class="form-label">DNI</label>
+              <input id="dni" type="text" class="form-control" th:field="*{dni}"
+                     th:errorclass="needcorrection"
+                     placeholder="12345678A" pattern="[0-9]{8}[A-Za-z]{1}" minlength="9" maxlength="9" required>
+              <div th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}" class="error"></div>
             </div>
             <div class="row mb-3">
               <div class="col">
-                <label class="form-label">Nom</label>
-                <input type="text" class="form-control" th:field="*{nom}" required>
+                <label for="nom" class="form-label">Nom</label>
+                <input id="nom" type="text" class="form-control" th:field="*{nom}"
+                       th:errorclass="needcorrection" required>
+                <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}" class="error"></div>
               </div>
               <div class="col">
-                <label class="form-label">Cognoms</label>
-                <input type="text" class="form-control" th:field="*{cognoms}" required>
+                <label for="cognoms" class="form-label">Cognoms</label>
+                <input id="cognoms" type="text" class="form-control" th:field="*{cognoms}"
+                       th:errorclass="needcorrection" required>
+                <div th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}" class="error"></div>
               </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Correu Electrònic (Email)</label>
-              <input type="email" class="form-control" th:field="*{email}" required>
+              <label for="email" class="form-label">Correu Electrònic (Email)</label>
+              <input id="email" type="email" class="form-control" th:field="*{email}"
+                     th:errorclass="needcorrection" required>
+              <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Telèfon</label>
-              <input type="tel" class="form-control" th:field="*{telefono}" pattern="[0-9]{9}" required>
+              <label for="telefono" class="form-label">Telèfon</label>
+              <input id="telefono" type="tel" class="form-control" th:field="*{telefono}"
+                     th:errorclass="needcorrection" pattern="[0-9]{9}" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Contrasenya</label>
-              <input type="password" class="form-control" th:field="*{contrasenya}" required>
+              <label for="contrasenya" class="form-label">Contrasenya</label>
+              <input id="contrasenya" type="password" class="form-control" th:field="*{contrasenya}"
+                     th:errorclass="needcorrection" required>
+              <div th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}" class="error"></div>
             </div>
             <div class="form-check mb-4">
-              <input class="form-check-input" type="checkbox" th:field="*{consentimentInformat}" id="consentiment" required>
+              <input class="form-check-input" type="checkbox" th:field="*{consentimentInformat}" id="consentiment">
               <label class="form-check-label" for="consentiment">
                 Accepte el consentiment informat (Requerit)
               </label>
+              <div th:if="${#fields.hasErrors('consentimentInformat')}" th:errors="*{consentimentInformat}" class="error"></div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Registrar-me</button>
           </form>
@@ -50,6 +63,6 @@
       </div>
     </div>
   </div>
-</div>
+</main>
 </body>
 </html>

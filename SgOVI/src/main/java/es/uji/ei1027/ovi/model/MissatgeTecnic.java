@@ -25,4 +25,14 @@ public class MissatgeTecnic {
 
     public LocalDateTime getDataEnviament() { return dataEnviament; }
     public void setDataEnviament(LocalDateTime dataEnviament) { this.dataEnviament = dataEnviament; }
+
+    @Override
+    public String toString() {
+        return "MissatgeTecnic{idMissatge='" + idMissatge + "'" +
+                ", idConversaTecnic='" + idConversaTecnic + "'" +
+                ", emissor='" + emissor + "'" +
+                ", textMissatge='" + textMissatge + "'" +
+                ", dataEnviament='" + dataEnviament + "'" +
+                "}";
+    }
 }

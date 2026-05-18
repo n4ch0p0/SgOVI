@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Consultar Negociacions - OVI')}"></head>
 <body class="bg-light">
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
-<div class="container mt-4">
+<main class="container mt-4">
   <h2>Estat de les Negociacions (Sol·licitud #<span th:text="${idRequest}"></span>)</h2>
   <hr>
 
@@ -23,6 +23,6 @@
     </div>
   </div>
   <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">Tornar</a>
-</div>
+</main>
 </body>
 </html>

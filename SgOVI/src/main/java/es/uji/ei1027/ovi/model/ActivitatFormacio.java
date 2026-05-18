@@ -51,4 +51,14 @@ public class ActivitatFormacio {
     public void setTipus(String tipus) {
         this.tipus = tipus;
     }
+
+    @Override
+    public String toString() {
+        return "ActivitatFormacio{id='" + id + "'" +
+                ", dniFormador='" + dniFormador + "'" +
+                ", titol='" + titol + "'" +
+                ", fecha='" + fecha + "'" +
+                ", tipus='" + tipus + "'" +
+                "}";
+    }
 }
