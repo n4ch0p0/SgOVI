@@ -1,9 +1,12 @@
 package es.uji.ei1027.ovi.controller;
 
 import es.uji.ei1027.ovi.model.UsuarioOVI;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.springframework.validation.Validator;
 
+@Component
 public class UsuarioValidator implements Validator {
 
     @Override

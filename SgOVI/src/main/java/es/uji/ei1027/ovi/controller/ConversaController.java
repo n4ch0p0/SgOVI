@@ -107,11 +107,7 @@ public class ConversaController {
         missatgeDao.addMissatge(m);
         
         // Simular notificación en tiempo real
-        Conversa c = conversaDao.getConversa(idConversa);
-        if (c != null) {
-            String target = m.getEmissor().equals("Usuari") ? c.getDniAp() : String.valueOf(c.getIdRequest()); // Idealmente buscaríamos el DNI del usuario
-            notificationService.notifyUser("Destinatari del missatge " + idConversa, "Nou missatge de " + m.getEmissor());
-        }
+        notificationService.notifyUser("Conversa " + idConversa, "Nou missatge de " + m.getEmissor());
 
         redirectAttributes.addFlashAttribute("mensajeExito", "Missatge enviat.");
         return "redirect:/conversa/list";
@@ -177,10 +173,8 @@ public class ConversaController {
         missatgeTecnicDao.addMissatge(m);
 
         // Simular notificación
-        ConversaTecnic ct = conversaTecnicDao.getConversa(idConversaTecnic);
-        if (ct != null) {
-            notificationService.notifyUser(m.getEmissor().equals("Tecnic") ? ct.getDniUsuario() : "Tècnic Admin", "Nou missatge a la conversa tècnica.");
-        }
+        notificationService.notifyUser("Conversa " + idConversaTecnic, "Nou missatge de " + m.getEmissor());
+
 
         redirectAttributes.addFlashAttribute("mensajeExito", "Missatge enviat.");
         return "redirect:/conversa/tecnic/list";
