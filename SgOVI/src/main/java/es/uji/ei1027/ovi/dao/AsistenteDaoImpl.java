@@ -1,6 +1,7 @@
 package es.uji.ei1027.ovi.dao;
 
 import es.uji.ei1027.ovi.model.AssistentPersonal;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,9 +28,11 @@ public class AsistenteDaoImpl implements AsistenteDao {
     public void addAsistente(AssistentPersonal a) {
         String sql = "INSERT INTO AssistentPersonal (dni, nom, cognoms, email, telefono, contrasenya, tipus, formacioAcademica, experienciaPrevia, proximitatGeografica, actiu, estat, motiu_rebuig) " +
                 "VALUES(?, ?, ?, ?, ?, ?, (?)::tipus_ap, ?, ?, ?, ?, 'Pendent'::estat_validacio, NULL)";
+        
+        String hashedPass = BCrypt.hashpw(a.getContrasenya(), BCrypt.gensalt());
 
         jdbcTemplate.update(sql,
-                a.getDni(), a.getNom(), a.getCognoms(), a.getEmail(), a.getTelefono(), a.getContrasenya(),
+                a.getDni(), a.getNom(), a.getCognoms(), a.getEmail(), a.getTelefono(), hashedPass,
                 a.getTipus(), a.getFormacioAcademica(), a.getExperienciaPrevia(), a.getProximitatGeografica(), true
         );
     }
@@ -94,10 +97,16 @@ public class AsistenteDaoImpl implements AsistenteDao {
     }
 
     @Override
-    public List<AssistentPersonal> getCandidatosAdecuados(String tipus) {
-        String sql = "SELECT * FROM AssistentPersonal WHERE actiu = true AND estat = 'Acceptat' AND tipus = (?)::tipus_ap";
+    public List<AssistentPersonal> getCandidatosAdecuados(String tipus, String preferencies) {
+        // En un caso real haríamos un MATCH con TsVector en Postgres o usaríamos NLP.
+        // Aquí hacemos un filtrado básico: ordenamos por si tienen alguna coincidencia en su perfil.
+        String sql = "SELECT * FROM AssistentPersonal WHERE actiu = true AND estat = 'Acceptat' AND tipus = (?)::tipus_ap " +
+                     "ORDER BY (CASE WHEN proximitatGeografica ILIKE ? THEN 1 WHEN formacioAcademica ILIKE ? THEN 2 ELSE 3 END) ASC";
+                     
+        String likeQuery = "%" + (preferencies != null ? preferencies.replace(" ", "%") : "") + "%";
+        
         try {
-            return jdbcTemplate.query(sql, new AssistentPersonalRowMapper(), tipus);
+            return jdbcTemplate.query(sql, new AssistentPersonalRowMapper(), tipus, likeQuery, likeQuery);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<AssistentPersonal>();
         }
@@ -112,5 +121,11 @@ public class AsistenteDaoImpl implements AsistenteDao {
             }
             return map;
         });
+    }
+
+    @Override
+    public void anonimizarAsistente(String dni) {
+        String sql = "UPDATE AssistentPersonal SET nom='Assistent Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada', contrasenya='', formacioAcademica='', experienciaPrevia='', proximitatGeografica='', actiu=FALSE WHERE dni=?";
+        jdbcTemplate.update(sql, dni);
     }
 }

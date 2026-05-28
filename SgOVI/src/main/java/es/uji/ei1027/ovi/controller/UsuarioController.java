@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("/usuario")
@@ -24,7 +25,11 @@ public class UsuarioController {
     @Autowired
     private AsistenteDao asistenteDao;
     @Autowired
+    private UsuarioDao usuarioDao;
+    @Autowired
     private RegistreContracteUsuarioDao registreContracteUsuarioDao;
+    @Autowired
+    private UsuarioValidator usuarioValidator;
 
     @GetMapping("/espera")
     public String espera(HttpSession session) {
@@ -59,9 +64,14 @@ public class UsuarioController {
     }
 
     @PostMapping("/perfil/guardar")
-    public String guardarPerfil(@ModelAttribute("usuario") UsuarioOVI usuarioActualizado, HttpSession session) {
+    public String guardarPerfil(@ModelAttribute("usuario") UsuarioOVI usuarioActualizado, BindingResult bindingResult, HttpSession session, Model model) {
         UsuarioOVI usuarioSesion = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuarioSesion == null) return "redirect:/login";
+
+        usuarioValidator.validate(usuarioActualizado, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "usuario/editar_perfil";
+        }
 
         // Mantenemos datos que no se editan por seguridad
         usuarioActualizado.setEstat(usuarioSesion.getEstat());
@@ -120,7 +130,7 @@ public class UsuarioController {
         // Verificamos que la petición es suya y está aprobada
         if (!"Aprovada".equals(peticion.getEstat())) return "redirect:/usuario/solicitudes";
 
-        List<AssistentPersonal> candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei());
+        List<AssistentPersonal> candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei(), peticion.getPreferencies());
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("candidatos", candidatos);
@@ -157,5 +167,17 @@ public class UsuarioController {
 
         registreContracteUsuarioDao.addContracte(idRequest, idAp, inici, fi, null);
         return "redirect:/usuario/contractes";
+    }
+
+    @PostMapping("/baja")
+    public String darDeBaja(HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null) return "redirect:/login";
+        
+        usuarioDao.anonimizarUsuario(usuario.getDni());
+        session.invalidate();
+        
+        redirectAttributes.addFlashAttribute("mensajeBaja", "El teu compte s'ha donat de baixa correctament. Les teues dades han sigut anonimitzades segons el RGPD.");
+        return "redirect:/login";
     }
 }

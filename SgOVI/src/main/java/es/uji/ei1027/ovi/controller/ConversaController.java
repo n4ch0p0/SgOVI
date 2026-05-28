@@ -8,6 +8,7 @@ import es.uji.ei1027.ovi.dao.UsuarioDao;
 import es.uji.ei1027.ovi.dao.AsistenteDao;
 import es.uji.ei1027.ovi.dao.APRequestDao;
 import es.uji.ei1027.ovi.model.*;
+import es.uji.ei1027.ovi.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,9 @@ public class ConversaController {
 
     @Autowired
     private APRequestDao apRequestDao;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     // =============================================
     // CONVERSES USUARI <-> AP
@@ -101,6 +105,14 @@ public class ConversaController {
         }
 
         missatgeDao.addMissatge(m);
+        
+        // Simular notificación en tiempo real
+        Conversa c = conversaDao.getConversa(idConversa);
+        if (c != null) {
+            String target = m.getEmissor().equals("Usuari") ? c.getDniAp() : String.valueOf(c.getIdRequest()); // Idealmente buscaríamos el DNI del usuario
+            notificationService.notifyUser("Destinatari del missatge " + idConversa, "Nou missatge de " + m.getEmissor());
+        }
+
         redirectAttributes.addFlashAttribute("mensajeExito", "Missatge enviat.");
         return "redirect:/conversa/list";
     }
@@ -163,6 +175,13 @@ public class ConversaController {
         }
 
         missatgeTecnicDao.addMissatge(m);
+
+        // Simular notificación
+        ConversaTecnic ct = conversaTecnicDao.getConversa(idConversaTecnic);
+        if (ct != null) {
+            notificationService.notifyUser(m.getEmissor().equals("Tecnic") ? ct.getDniUsuario() : "Tècnic Admin", "Nou missatge a la conversa tècnica.");
+        }
+
         redirectAttributes.addFlashAttribute("mensajeExito", "Missatge enviat.");
         return "redirect:/conversa/tecnic/list";
     }

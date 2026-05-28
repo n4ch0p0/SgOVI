@@ -1,6 +1,7 @@
 package es.uji.ei1027.ovi.dao;
 
 import es.uji.ei1027.ovi.model.UsuarioOVI;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,15 +27,21 @@ public class UsuarioDaoImpl implements UsuarioDao {
     /* Afegeix l'usuari a la base de dades */
     @Override
     public void addUsuario(UsuarioOVI u) {
+        String hashedPass = BCrypt.hashpw(u.getContrasenya(), BCrypt.gensalt());
         jdbcTemplate.update("INSERT INTO UsuarioOVI (dni, nom, cognoms, email, telefono, contrasenya, consentimentInformat, estat, motiu_rebuig) VALUES(?, ?, ?, ?, ?, ?, ?, 'Pendent'::estat_validacio, NULL)",
-                u.getDni(), u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), u.getContrasenya(), u.getConsentimentInformat());
+                u.getDni(), u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), hashedPass, u.getConsentimentInformat());
     }
 
     /* Actualitza els atributs de l'usuari (excepte el dni, que és la clau primària) */
     @Override
     public void updateUsuario(UsuarioOVI u) {
+        String hashedPass = u.getContrasenya();
+        // Només rehashejem si no està ja hashejat (BCrypt hashes start with $2a$ or $2b$ and are 60 chars long)
+        if (hashedPass != null && !hashedPass.startsWith("$2a$") && !hashedPass.isEmpty()) {
+            hashedPass = BCrypt.hashpw(u.getContrasenya(), BCrypt.gensalt());
+        }
         jdbcTemplate.update("UPDATE UsuarioOVI SET nom=?, cognoms=?, email=?, telefono=?, contrasenya=?, consentimentInformat=? WHERE dni=?",
-                u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), u.getContrasenya(), u.getConsentimentInformat(), u.getDni());
+                u.getNom(), u.getCognoms(), u.getEmail(), u.getTelefono(), hashedPass, u.getConsentimentInformat(), u.getDni());
     }
 
     /* Obté l'usuari amb el dni donat. Torna null si no existeix. */
@@ -68,5 +75,11 @@ public class UsuarioDaoImpl implements UsuarioDao {
             }
             return map;
         });
+    }
+
+    @Override
+    public void anonimizarUsuario(String dni) {
+        String sql = "UPDATE UsuarioOVI SET nom='Usuari Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada per l''usuari', contrasenya='' WHERE dni=?";
+        jdbcTemplate.update(sql, dni);
     }
 }

@@ -10,4 +10,5 @@ public interface UsuarioDao {
     UsuarioOVI getUsuario(String dni);
     List<UsuarioOVI> getUsuarios();
     Map<String, String> obtenerMapaNombresUsuarios();
+    void anonimizarUsuario(String dni);
 }

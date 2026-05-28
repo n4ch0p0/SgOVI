@@ -16,6 +16,7 @@ public interface AsistenteDao {
     List<AssistentPersonal> getAsistentesPendientes();
     void updateEstadoAsistente(String dni, boolean aceptado);
 
-    List<AssistentPersonal> getCandidatosAdecuados(String tipus);
+    List<AssistentPersonal> getCandidatosAdecuados(String tipus, String preferencies);
     Map<String, String> obtenerMapaNombresAsistentes();
+    void anonimizarAsistente(String dni);
 }

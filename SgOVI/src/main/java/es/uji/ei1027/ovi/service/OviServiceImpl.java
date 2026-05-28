@@ -2,6 +2,7 @@ package es.uji.ei1027.ovi.service;
 
 import es.uji.ei1027.ovi.dao.*;
 import es.uji.ei1027.ovi.model.*;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -36,14 +37,27 @@ public class OviServiceImpl implements OviService {
     @Override
     public UsuarioOVI loginUsuario(String dni, String password) {
         UsuarioOVI u = usuarioDao.getUsuario(dni);
-        if (u != null && u.getContrasenya().equals(password)) return u;
+        if (u != null) {
+            try {
+                if (BCrypt.checkpw(password, u.getContrasenya())) return u;
+            } catch (IllegalArgumentException e) {
+                // Fallback para contraseñas en texto plano de prueba en la BD
+                if (u.getContrasenya().equals(password)) return u;
+            }
+        }
         return null;
     }
 
     @Override
     public AssistentPersonal loginAsistente(String dni, String password) {
         AssistentPersonal a = asistenteDao.getAsistente(dni);
-        if (a != null && a.getContrasenya().equals(password)) return a;
+        if (a != null) {
+            try {
+                if (BCrypt.checkpw(password, a.getContrasenya())) return a;
+            } catch (IllegalArgumentException e) {
+                if (a.getContrasenya().equals(password)) return a;
+            }
+        }
         return null;
     }
 

@@ -4,22 +4,26 @@
 <body>
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
 <main class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title text-center mb-4">Iniciar Sessió</h3>
-                    <form th:action="@{/login}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">DNI</label>
-                            <input type="text" class="form-control" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contrasenya</label>
-                            <input type="password" class="form-control" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                    </form>
+    <div class="ovi-login-card">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Iniciar Sessió
+                </h3>
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">DNI</label>
+                        <input type="text" id="username" class="form-control" name="username" placeholder="12345678A" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contrasenya</label>
+                        <input type="password" id="password" class="form-control" name="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" style="padding: .7rem;">Entrar</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a th:href="@{/registro/seleccion}" class="text-muted" style="font-size: .85rem;">No tens compte? Registra't ací</a>
                 </div>
             </div>
         </div>

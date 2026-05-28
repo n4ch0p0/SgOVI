@@ -4,17 +4,11 @@
 <body>
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
 <main class="container mt-5">
-    <div th:if="${#strings.equals(errorName, 'Error inesperat')}" class="alert alert-warning shadow-sm" role="alert">
-        <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorName}">Error</span></h4>
-        <hr>
-        <p th:text="${message}">Missatge d'error</p>
-        <a th:href="@{/}" class="btn btn-warning mt-2">Tornar a l'inici</a>
-    </div>
-    <div th:unless="${#strings.equals(errorName, 'Error inesperat')}" class="alert alert-info shadow-sm" role="alert">
-        <h4 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i><span th:text="${errorName}">Error</span></h4>
-        <hr>
-        <p th:text="${message}">Missatge d'error</p>
-        <a th:href="@{/}" class="btn btn-info mt-2">Tornar a l'inici</a>
+    <div class="ovi-status-page rejected">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <h2 style="font-weight: 800; letter-spacing: -0.03em;" th:text="${errorName} ?: 'S''ha produït un error'"></h2>
+        <p class="text-muted mt-3" th:text="${message} ?: 'Hem detectat un problema al servidor. Per favor, torna a intentar-ho.'"></p>
+        <a href="/" class="btn btn-primary mt-4 px-4 py-2">Tornar a l'Inici</a>
     </div>
 </main>
 </body>
