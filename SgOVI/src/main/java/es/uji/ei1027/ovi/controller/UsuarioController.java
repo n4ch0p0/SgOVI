@@ -127,20 +127,34 @@ public class UsuarioController {
 
         APRequest peticion = apRequestDao.getRequest(idRequest);
 
-        // Verificamos que la petición es suya y está aprobada
+        // Defensem contra IDs inexistents (CRASH-1) i contra peticions alienes (SEC-3)
+        if (peticion == null) return "redirect:/usuario/solicitudes";
+        if (!usuario.getDni().equals(peticion.getDniUsuario())) return "redirect:/usuario/solicitudes";
+
+        // Verificamos que la petición está aprobada
         if (!"Aprovada".equals(peticion.getEstat())) return "redirect:/usuario/solicitudes";
 
         List<AssistentPersonal> candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei(), peticion.getPreferencies());
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("candidatos", candidatos);
-        return "usuario/proponer_candidatos"; // Ahora esta vista pertenece al usuario
+        return "usuario/proponer_candidatos";
     }
 
     @GetMapping("/contractes/editar/{id}")
     public String formEditarContracte(@PathVariable int id, HttpSession session, Model model) {
-        if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
-        model.addAttribute("contracte", registreContracteUsuarioDao.getContracte(id));
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null) return "redirect:/login";
+
+        // Verificació de propietat: el contracte ha de pertànyer a l'usuari en sessió (SEC-3)
+        boolean pertany = registreContracteUsuarioDao.getContractesByUsuario(usuario.getDni())
+                .stream().anyMatch(c -> c.getId() == id);
+        if (!pertany) return "redirect:/usuario/contractes";
+
+        RegistreContracteUsuarioOvi contracte = registreContracteUsuarioDao.getContracte(id);
+        if (contracte == null) return "redirect:/usuario/contractes";
+
+        model.addAttribute("contracte", contracte);
         return "usuario/editar_contracte";
     }
 
@@ -148,7 +162,14 @@ public class UsuarioController {
     public String actualizarContracte(@RequestParam("id") int id,
                                       @RequestParam("dataInici") String inici,
                                       @RequestParam("dataFi") String fi, HttpSession session) {
-        if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null) return "redirect:/login";
+
+        // Verificació de propietat abans d'actualitzar (SEC-3)
+        boolean pertany = registreContracteUsuarioDao.getContractesByUsuario(usuario.getDni())
+                .stream().anyMatch(c -> c.getId() == id);
+        if (!pertany) return "redirect:/usuario/contractes";
+
         registreContracteUsuarioDao.updateContracte(id, LocalDate.parse(inici),
                 (fi != null && !fi.isEmpty()) ? LocalDate.parse(fi) : null);
         return "redirect:/usuario/contractes";

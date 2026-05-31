@@ -2,6 +2,7 @@ package es.uji.ei1027.ovi.dao;
 
 import es.uji.ei1027.ovi.model.APRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
@@ -70,16 +71,23 @@ public class APRequestDaoImpl implements APRequestDao {
 
     @Override
     public APRequest getRequest(int idRequest) {
-        String sql = "SELECT * FROM aprequest WHERE id_request = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            APRequest r = new APRequest();
-            r.setId(rs.getInt("id_request"));
-            r.setDniUsuario(rs.getString("id_usuario")); // Nota: ajusta si necesitas el DNI real
-            r.setTipusServei(rs.getString("tipusservei"));
-            r.setPreferencies(rs.getString("preferencies"));
-            r.setEstat(rs.getString("estat"));
-            return r;
-        }, idRequest);
+        // Usem JOIN per obtindre el DNI real en lloc del id_usuario numèric
+        String sql = "SELECT a.*, u.dni as dni_usuari FROM aprequest a " +
+                "JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
+                "WHERE a.id_request = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                APRequest r = new APRequest();
+                r.setId(rs.getInt("id_request"));
+                r.setDniUsuario(rs.getString("dni_usuari"));
+                r.setTipusServei(rs.getString("tipusservei"));
+                r.setPreferencies(rs.getString("preferencies"));
+                r.setEstat(rs.getString("estat"));
+                return r;
+            }, idRequest);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

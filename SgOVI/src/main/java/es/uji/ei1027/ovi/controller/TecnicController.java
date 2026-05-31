@@ -86,7 +86,8 @@ public class TecnicController {
     }
 
     @GetMapping("/solicitudes")
-    public String gestionarSolicitudes(Model model) {
+    public String gestionarSolicitudes(HttpSession session, Model model) {
+        if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
         model.addAttribute("solicitudes", apRequestDao.getRequestsPendientes());
         model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
         return "tecnic/gestionar_solicitudes";
@@ -104,7 +105,8 @@ public class TecnicController {
     }
 
     @GetMapping("/contractes")
-    public String listTodosContractes(Model model) {
+    public String listTodosContractes(HttpSession session, Model model) {
+        if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
         model.addAttribute("contractes", registreContracteUsuarioDao.getTodosLosContractes());
         model.addAttribute("mapaNomsClientsPorContracte", registreContracteUsuarioDao.obtenerMapaNombresUsuariosPorContracte());
         model.addAttribute("mapaNomsAssistents", asistenteDao.obtenerMapaNombresAsistentes());

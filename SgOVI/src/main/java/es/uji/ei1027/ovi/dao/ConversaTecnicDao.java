@@ -8,4 +8,7 @@ public interface ConversaTecnicDao {
     List<ConversaTecnic> getConversesByUsuario(String dniUsuario);
     List<ConversaTecnic> getAllConverses();
     boolean existeixConversa(String dniUsuario);
+
+    /** Comprova si una conversa tècnica pertany a l'usuari indicat */
+    boolean pertanyAUsuari(int idConversaTecnic, String dniUsuario);
 }

@@ -125,7 +125,10 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     @Override
     public void anonimizarAsistente(String dni) {
-        String sql = "UPDATE AssistentPersonal SET nom='Assistent Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada', contrasenya='', formacioAcademica='', experienciaPrevia='', proximitatGeografica='', actiu=FALSE WHERE dni=?";
-        jdbcTemplate.update(sql, dni);
+        // Usem un hash BCrypt d'una UUID aleatòria perquè cap contrasenya
+        // real coincidisca mai amb aquest valor (evita el re-login post-baixa)
+        String invalidHash = BCrypt.hashpw(java.util.UUID.randomUUID().toString(), BCrypt.gensalt());
+        String sql = "UPDATE AssistentPersonal SET nom='Assistent Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada', contrasenya=?, formacioAcademica='', experienciaPrevia='', proximitatGeografica='', actiu=FALSE WHERE dni=?";
+        jdbcTemplate.update(sql, invalidHash, dni);
     }
 }

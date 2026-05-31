@@ -61,16 +61,21 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
     public RegistreContracteUsuarioOvi getContracte(int id) {
         String sql = "SELECT c.id_contracte, ap.dni AS dni_assistent, c.fecha_inici, c.fecha_fin, c.pdf_path " +
                 "FROM RegistreContracte c JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap WHERE c.id_contracte = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
-            c.setId(rs.getInt("id_contracte"));
-            c.setDniAsistente(rs.getString("dni_assistent"));
-            c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
-            if (rs.getDate("fecha_fin") != null)
-                c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
-            c.setPdfPath(rs.getString("pdf_path"));
-            return c;
-        }, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
+                c.setId(rs.getInt("id_contracte"));
+                c.setDniAsistente(rs.getString("dni_assistent"));
+                if (rs.getDate("fecha_inici") != null)
+                    c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
+                if (rs.getDate("fecha_fin") != null)
+                    c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
+                c.setPdfPath(rs.getString("pdf_path"));
+                return c;
+            }, id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
