@@ -4,6 +4,7 @@ import es.uji.ei1027.ovi.model.RegistreContracteUsuarioOvi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
         }, dniUsuario);
     }
 
+    @Transactional
     @Override
     public void addContracte(int idRequest, int idAp, LocalDate fechaInici, LocalDate fechaFin, String pdfPath) {
         // 1. Inserim el contracte directament usant la request i l'assistent

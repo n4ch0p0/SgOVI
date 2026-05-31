@@ -46,6 +46,10 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     @Override
     public void updateEstados(String dni, boolean estadoAceptado, boolean actiu, boolean estatAcceptat) {
+        String estat = estadoAceptado ? "Acceptat" : "Rebutjat";
+        jdbcTemplate.update(
+            "UPDATE AssistentPersonal SET actiu = ?, estat = (?)::estat_validacio WHERE dni = ?",
+            actiu, estat, dni);
     }
 
     /* Obté l'assistent amb el dni donat. Torna null si no existeix. */
