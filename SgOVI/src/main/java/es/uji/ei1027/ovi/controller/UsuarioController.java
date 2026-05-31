@@ -31,6 +31,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioValidator usuarioValidator;
 
+    @Autowired
+    private APRequestValidator apRequestValidator;
+
     @GetMapping("/espera")
     public String espera(HttpSession session) {
         if (session.getAttribute("usuarioLogueado") == null) return "redirect:/login";
@@ -64,19 +67,27 @@ public class UsuarioController {
     }
 
     @PostMapping("/perfil/guardar")
-    public String guardarPerfil(@ModelAttribute("usuario") UsuarioOVI usuarioActualizado, BindingResult bindingResult, HttpSession session, Model model) {
+    public String guardarPerfil(@ModelAttribute("usuario") UsuarioOVI usuarioActualizado,
+                                BindingResult bindingResult, HttpSession session,
+                                org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         UsuarioOVI usuarioSesion = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuarioSesion == null) return "redirect:/login";
+
+        // Si l'usuari no introdueix contrasenya, mantenim la hash existent
+        if (usuarioActualizado.getContrasenya() == null || usuarioActualizado.getContrasenya().trim().isEmpty()) {
+            usuarioActualizado.setContrasenya(usuarioSesion.getContrasenya());
+        }
 
         usuarioValidator.validate(usuarioActualizado, bindingResult);
         if (bindingResult.hasErrors()) {
             return "usuario/editar_perfil";
         }
 
-        // Mantenemos datos que no se editan por seguridad
         usuarioActualizado.setEstat(usuarioSesion.getEstat());
+        usuarioActualizado.setConsentimentInformat(usuarioSesion.getConsentimentInformat());
         oviService.actualizarUsuario(usuarioActualizado);
         session.setAttribute("usuarioLogueado", usuarioActualizado);
+        redirectAttributes.addFlashAttribute("mensajeExito", "El perfil s'ha actualitzat correctament.");
         return "redirect:/usuario/dashboard";
     }
 
@@ -111,11 +122,18 @@ public class UsuarioController {
     }
 
     @PostMapping("/solicitudes/add")
-    public String guardarSolicitud(@ModelAttribute("apRequest") APRequest peticion, HttpSession session) {
+    public String guardarSolicitud(@ModelAttribute("apRequest") APRequest peticion,
+                                   BindingResult bindingResult, HttpSession session) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuario == null) return "redirect:/login";
 
+        // Fixem el DNI des de sessió (mai del formulari) i validem la resta
         peticion.setDniUsuario(usuario.getDni());
+        apRequestValidator.validate(peticion, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "usuario/form_solicitud";
+        }
+
         oviService.solicitarAsistencia(peticion);
         return "redirect:/usuario/solicitudes";
     }

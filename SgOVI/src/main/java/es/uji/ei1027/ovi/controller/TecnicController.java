@@ -121,4 +121,20 @@ public class TecnicController {
         model.addAttribute("converses", conversaDao.getConversesByRequest(idRequest));
         return "tecnic/consultar_negociacions";
     }
+
+    @GetMapping("/solicitudes/{idRequest}/candidatos")
+    public String verCandidatsSolicitud(@PathVariable int idRequest, HttpSession session, Model model) {
+        if (session.getAttribute("tecnicLogueado") == null) return "redirect:/login";
+
+        APRequest peticion = apRequestDao.getRequest(idRequest);
+        if (peticion == null) return "redirect:/tecnic/solicitudes";
+
+        List<AssistentPersonal> candidatos = asistenteDao.getCandidatosAdecuados(
+                peticion.getTipusServei(), peticion.getPreferencies());
+
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
+        return "tecnic/candidatos_solicitud";
+    }
 }

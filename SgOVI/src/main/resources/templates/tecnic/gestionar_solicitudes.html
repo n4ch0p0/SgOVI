@@ -29,7 +29,11 @@
               <td><span class="badge bg-primary" th:text="${req.tipusServei}"></span></td>
               <td th:text="${req.preferencies}"></td>
               <td>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
+                  <a th:href="@{/tecnic/solicitudes/{id}/candidatos(id=${req.id})}"
+                     class="btn btn-sm btn-outline-primary" title="Veure assistents compatibles">
+                    <i class="bi bi-people-fill"></i> Candidats
+                  </a>
                   <button type="button" class="btn btn-sm btn-success" th:data-id="${req.id}"
                           th:data-nom="${mapaNomsUsuaris[req.dniUsuario]}" th:data-tipus="${req.tipusServei}"
                           th:data-pref="${req.preferencies}" onclick="mostrarModalAprovar(this)">

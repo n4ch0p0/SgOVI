@@ -7,6 +7,14 @@
 <main class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
+
+            <!-- Flash d'èxit -->
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-1"></i>
+                <span th:text="${mensajeExito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tancar"></button>
+            </div>
+
             <div class="card shadow-sm">
                 <div class="card-header bg-secondary text-white">
                     <h4 class="mb-0"><i class="bi bi-person-gear"></i> Editar el meu Perfil</h4>
@@ -20,43 +28,118 @@
                                 <input type="text" class="form-control bg-light" th:field="*{dni}" readonly>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Nom</label>
-                                <input type="text" class="form-control" th:field="*{nom}" required>
+                                <label class="form-label">Nom <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" th:field="*{nom}"
+                                       th:classappend="${#fields.hasErrors('nom')} ? 'is-invalid'"
+                                       required>
+                                <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"
+                                     class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Cognoms</label>
-                                <input type="text" class="form-control" th:field="*{cognoms}" required>
+                                <label class="form-label">Cognoms <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" th:field="*{cognoms}"
+                                       th:classappend="${#fields.hasErrors('cognoms')} ? 'is-invalid'"
+                                       required>
+                                <div th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"
+                                     class="invalid-feedback"></div>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Correu Electrònic</label>
-                                <input type="email" class="form-control" th:field="*{email}" required>
+                                <label class="form-label">Correu Electrònic <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                                       required>
+                                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                                     class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Telèfon</label>
-                                <input type="number" class="form-control" th:field="*{telefono}">
+                                <input type="tel" class="form-control" th:field="*{telefono}"
+                                       pattern="[0-9]{9}" placeholder="123456789">
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Nova Contrasenya</label>
-                            <input type="password" class="form-control" th:field="*{contrasenya}" required>
-                            <div class="form-text">Si us plau, torna a introduir la teua contrasenya actual si no vols canviar-la.</div>
+                            <!-- No pre-omplim el camp: si es deixa buit es manté l'actual -->
+                            <input type="password" class="form-control" name="contrasenya"
+                                   autocomplete="new-password"
+                                   th:classappend="${#fields.hasErrors('contrasenya')} ? 'is-invalid'"
+                                   placeholder="Deixa buit per mantenir la contrasenya actual">
+                            <div th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"
+                                 class="invalid-feedback"></div>
+                            <div class="form-text">Deixa buit per mantenir la contrasenya actual o escriu-ne una de nova.</div>
                         </div>
 
-                        <input type="hidden" th:field="*{consentimentInformat}">
-
                         <div class="d-flex justify-content-between">
-                            <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary">Cancel·lar</a>
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Canvis</button>
+                            <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i>Guardar Canvis
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
+
+            <!-- Zona de Perill: Donar-se de baixa -->
+            <div class="card border-danger mt-4">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-1"></i> Zona de Perill</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        Si dónes de baixa el teu compte, les teues dades seran anonimitzades de forma permanent
+                        d'acord amb el RGPD. <strong>Aquesta acció no es pot desfer.</strong>
+                    </p>
+                    <button type="button" class="btn btn-outline-danger"
+                            data-bs-toggle="modal" data-bs-target="#modalBaixa">
+                        <i class="bi bi-person-x-fill me-1"></i>Donar-se de Baixa
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
+
+<!-- Modal de confirmació de baixa -->
+<div class="modal fade" id="modalBaixa" tabindex="-1" aria-labelledby="modalBaixaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalBaixaLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>Confirmar Baixa del Compte
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Tancar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estàs segur/a que vols <strong class="text-danger">donar-te de baixa</strong>?</p>
+                <div class="alert alert-warning">
+                    <ul class="mb-0">
+                        <li>Les teues dades personals seran anonimitzades de forma permanent.</li>
+                        <li>No podràs accedir més al sistema amb aquest compte.</li>
+                        <li><strong>Aquesta acció és irreversible.</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                </button>
+                <form th:action="@{/usuario/baja}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-person-x-fill me-1"></i>Sí, Donar-me de Baixa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -20,6 +20,12 @@ public class RegistroController {
     @Autowired
     private AsistenteDao asistenteDao;
 
+    @Autowired
+    private UsuarioValidator usuarioValidator;
+
+    @Autowired
+    private AsistenteValidator asistenteValidator;
+
     
     @GetMapping("/seleccion")
     public String opciones() {
@@ -36,7 +42,6 @@ public class RegistroController {
     @PostMapping("/usuario/add")
     public String addUsuario(@ModelAttribute("usuario") UsuarioOVI usuario,
                              BindingResult bindingResult) {
-        UsuarioValidator usuarioValidator = new UsuarioValidator();
         usuarioValidator.validate(usuario, bindingResult);
         if (bindingResult.hasErrors()) {
             return "public/registro_usuarios";
@@ -55,7 +60,6 @@ public class RegistroController {
     @PostMapping("/asistente/add")
     public String addAsistente(@ModelAttribute("asistente") AssistentPersonal asistente,
                                BindingResult bindingResult) {
-        AsistenteValidator asistenteValidator = new AsistenteValidator();
         asistenteValidator.validate(asistente, bindingResult);
         if (bindingResult.hasErrors()) {
             return "public/registro_asistente";
