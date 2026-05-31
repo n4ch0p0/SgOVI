@@ -91,21 +91,32 @@ public class ConversaController {
     public String enviarMissatge(@RequestParam("idConversa") int idConversa,
                                  @RequestParam("mensaje") String texto,
                                  HttpSession session,
-                                 RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
+                                 RedirectAttributes redirectAttributes) {
         Missatge m = new Missatge();
         m.setIdConversa(idConversa);
         m.setTextMissatge(texto);
 
-        if (session.getAttribute("usuarioLogueado") != null) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        AssistentPersonal ap = (AssistentPersonal) session.getAttribute("asistenteLogueado");
+
+        if (usuario != null) {
+            // Verificació de propietat: la conversa ha de pertànyer a aquest usuari
+            if (!conversaDao.pertanyAUsuari(idConversa, usuario.getDni())) {
+                return "redirect:/conversa/list";
+            }
             m.setEmissor("Usuari");
-        } else if (session.getAttribute("asistenteLogueado") != null) {
+        } else if (ap != null) {
+            // Verificació de propietat: la conversa ha de pertànyer a aquest assistent
+            if (!conversaDao.pertanyAAp(idConversa, ap.getDni())) {
+                return "redirect:/conversa/list";
+            }
             m.setEmissor("AP");
         } else {
             return "redirect:/login";
         }
 
         missatgeDao.addMissatge(m);
-        
+
         // Simular notificación en tiempo real
         notificationService.notifyUser("Conversa " + idConversa, "Nou missatge de " + m.getEmissor());
 
@@ -157,14 +168,20 @@ public class ConversaController {
     public String enviarMissatgeTecnic(@RequestParam("idConversaTecnic") int idConversaTecnic,
                                        @RequestParam("mensaje") String texto,
                                        HttpSession session,
-                                       RedirectAttributes redirectAttributes) { // <-- Parámetro añadido aquí
+                                       RedirectAttributes redirectAttributes) {
         MissatgeTecnic m = new MissatgeTecnic();
         m.setIdConversaTecnic(idConversaTecnic);
         m.setTextMissatge(texto);
 
         if (session.getAttribute("tecnicLogueado") != null) {
+            // El tècnic pot escriure en qualsevol conversa tècnica: no cal verificar propietat
             m.setEmissor("Tecnic");
         } else if (session.getAttribute("usuarioLogueado") != null) {
+            UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+            // Verificació de propietat: la conversa tècnica ha de pertànyer a aquest usuari
+            if (!conversaTecnicDao.pertanyAUsuari(idConversaTecnic, usuario.getDni())) {
+                return "redirect:/conversa/tecnic/list";
+            }
             m.setEmissor("Usuari");
         } else {
             return "redirect:/login";
@@ -174,7 +191,6 @@ public class ConversaController {
 
         // Simular notificación
         notificationService.notifyUser("Conversa " + idConversaTecnic, "Nou missatge de " + m.getEmissor());
-
 
         redirectAttributes.addFlashAttribute("mensajeExito", "Missatge enviat.");
         return "redirect:/conversa/tecnic/list";

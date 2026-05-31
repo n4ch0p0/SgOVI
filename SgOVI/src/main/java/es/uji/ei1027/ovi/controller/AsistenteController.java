@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.validation.BindingResult;
 import java.util.List;
 import java.util.Map;
 
@@ -83,11 +84,38 @@ public class AsistenteController {
     }
 
     @PostMapping("/perfil/actualizar")
-    public String actualizarPerfil(@ModelAttribute("asistente") AssistentPersonal asistenteActualizado, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String actualizarPerfil(@ModelAttribute("asistente") AssistentPersonal asistenteActualizado,
+                                   BindingResult bindingResult, HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
         AssistentPersonal asistenteSesion = (AssistentPersonal) session.getAttribute("asistenteLogueado");
         if (asistenteSesion == null) return "redirect:/login";
 
-        // Per seguretat, mantenim les dades crítiques i estats que no s'editen al formulari
+        // Validació server-side dels camps editables
+        if (asistenteActualizado.getFormacioAcademica() == null
+                || asistenteActualizado.getFormacioAcademica().trim().isEmpty()) {
+            bindingResult.rejectValue("formacioAcademica", "obligatori",
+                    "La formació acadèmica és obligatòria");
+        }
+        if (asistenteActualizado.getExperienciaPrevia() == null
+                || asistenteActualizado.getExperienciaPrevia().trim().isEmpty()) {
+            bindingResult.rejectValue("experienciaPrevia", "obligatori",
+                    "L'experiència prèvia és obligatòria");
+        }
+        if (asistenteActualizado.getProximitatGeografica() == null
+                || asistenteActualizado.getProximitatGeografica().trim().isEmpty()) {
+            bindingResult.rejectValue("proximitatGeografica", "obligatori",
+                    "La proximitat geogràfica és obligatòria");
+        }
+
+        if (bindingResult.hasErrors()) {
+            // Restaurem dades de sessió que no venen del formulari
+            asistenteActualizado.setDni(asistenteSesion.getDni());
+            asistenteActualizado.setTipus(asistenteSesion.getTipus());
+            asistenteActualizado.setEstat(asistenteSesion.getEstat());
+            return "asistente/perfil";
+        }
+
+        // Per seguretat, mantenim les dades crítiques que no s'editen al formulari
         asistenteActualizado.setDni(asistenteSesion.getDni());
         asistenteActualizado.setTipus(asistenteSesion.getTipus());
         asistenteActualizado.setEstat(asistenteSesion.getEstat());

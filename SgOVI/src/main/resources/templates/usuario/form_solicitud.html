@@ -14,25 +14,40 @@
                     <form th:action="@{/usuario/solicitudes/add}" th:object="${apRequest}" method="post">
                         <div class="mb-3">
                             <label for="dniUsuario" class="form-label">El teu DNI</label>
-                            <input type="text" id="dniUsuario" class="form-control" th:field="*{dniUsuario}" required readonly >
+                            <input type="text" id="dniUsuario" class="form-control bg-light"
+                                   th:field="*{dniUsuario}" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="tipusServei" class="form-label">Tipus de Servei Necessari</label>
-                            <select id="tipusServei" class="form-select" th:field="*{tipusServei}">
+                            <label for="tipusServei" class="form-label">Tipus de Servei Necessari <span class="text-danger">*</span></label>
+                            <select id="tipusServei" class="form-select"
+                                    th:field="*{tipusServei}"
+                                    th:classappend="${#fields.hasErrors('tipusServei')} ? 'is-invalid'">
                                 <option value="PAP">PAP (Professional d'Assistència Personal)</option>
                                 <option value="PATY">PATY (Acompanyament)</option>
                             </select>
+                            <div th:if="${#fields.hasErrors('tipusServei')}" th:errors="*{tipusServei}"
+                                 class="invalid-feedback"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="preferencies" class="form-label">Preferències / Necessitats específiques</label>
-                            <textarea id="preferencies" class="form-control" th:field="*{preferencies}" rows="3" placeholder="Horaris, tipus de suport..." required></textarea>
+                            <label for="preferencies" class="form-label">Preferències / Necessitats específiques <span class="text-danger">*</span></label>
+                            <textarea id="preferencies" class="form-control"
+                                      th:field="*{preferencies}" rows="3"
+                                      th:classappend="${#fields.hasErrors('preferencies')} ? 'is-invalid'"
+                                      placeholder="Horaris, tipus de suport, zona geogràfica..."></textarea>
+                            <div th:if="${#fields.hasErrors('preferencies')}" th:errors="*{preferencies}"
+                                 class="invalid-feedback"></div>
+                            <div class="form-text">Mínim 5 caràcters. Descriu horaris, necessitats, zona preferida, etc.</div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a th:href="@{/usuario/dashboard}" class="btn btn-secondary">Cancel·lar</a>
-                            <button type="submit" class="btn btn-success px-5">Enviar Sol·licitud</button>
+                            <a th:href="@{/usuario/solicitudes}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                            </a>
+                            <button type="submit" class="btn btn-success px-5">
+                                <i class="bi bi-send me-1"></i>Enviar Sol·licitud
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -94,6 +94,25 @@ public class ConversaDaoImpl implements ConversaDao {
     }
 
     @Override
+    public boolean pertanyAUsuari(int idConversa, String dniUsuario) {
+        String sql = "SELECT COUNT(*) FROM Conversa c " +
+                "JOIN aprequest r ON c.id_request = r.id_request " +
+                "JOIN usuarioovi u ON r.id_usuario = u.id_usuario " +
+                "WHERE c.id_conversa = ? AND u.dni = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConversa, dniUsuario);
+        return count != null && count > 0;
+    }
+
+    @Override
+    public boolean pertanyAAp(int idConversa, String dniAp) {
+        String sql = "SELECT COUNT(*) FROM Conversa c " +
+                "JOIN assistentpersonal ap ON c.id_ap = ap.id_ap " +
+                "WHERE c.id_conversa = ? AND ap.dni = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConversa, dniAp);
+        return count != null && count > 0;
+    }
+
+    @Override
     public List<Conversa> getConversesByRequest(int idRequest) {
         String sql = "SELECT c.*, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap " +
                 "FROM Conversa c " +

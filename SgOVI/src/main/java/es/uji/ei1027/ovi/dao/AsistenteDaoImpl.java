@@ -46,6 +46,10 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     @Override
     public void updateEstados(String dni, boolean estadoAceptado, boolean actiu, boolean estatAcceptat) {
+        String estat = estadoAceptado ? "Acceptat" : "Rebutjat";
+        jdbcTemplate.update(
+            "UPDATE AssistentPersonal SET actiu = ?, estat = (?)::estat_validacio WHERE dni = ?",
+            actiu, estat, dni);
     }
 
     /* Obté l'assistent amb el dni donat. Torna null si no existeix. */
@@ -125,7 +129,10 @@ public class AsistenteDaoImpl implements AsistenteDao {
 
     @Override
     public void anonimizarAsistente(String dni) {
-        String sql = "UPDATE AssistentPersonal SET nom='Assistent Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada', contrasenya='', formacioAcademica='', experienciaPrevia='', proximitatGeografica='', actiu=FALSE WHERE dni=?";
-        jdbcTemplate.update(sql, dni);
+        // Usem un hash BCrypt d'una UUID aleatòria perquè cap contrasenya
+        // real coincidisca mai amb aquest valor (evita el re-login post-baixa)
+        String invalidHash = BCrypt.hashpw(java.util.UUID.randomUUID().toString(), BCrypt.gensalt());
+        String sql = "UPDATE AssistentPersonal SET nom='Assistent Eliminat', cognoms='', email='anonim@ovi.es', telefono=NULL, estat='Rebutjat'::estat_validacio, motiu_rebuig='Baixa sol·licitada', contrasenya=?, formacioAcademica='', experienciaPrevia='', proximitatGeografica='', actiu=FALSE WHERE dni=?";
+        jdbcTemplate.update(sql, invalidHash, dni);
     }
 }

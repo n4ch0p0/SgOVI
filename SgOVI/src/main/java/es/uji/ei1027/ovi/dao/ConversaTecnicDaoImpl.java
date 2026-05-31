@@ -67,6 +67,13 @@ public class ConversaTecnicDaoImpl implements ConversaTecnicDao {
         return count != null && count > 0;
     }
 
+    @Override
+    public boolean pertanyAUsuari(int idConversaTecnic, String dniUsuario) {
+        String sql = "SELECT COUNT(*) FROM ConversaTecnic WHERE id_conversa_tecnic = ? AND dni_usuario = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConversaTecnic, dniUsuario);
+        return count != null && count > 0;
+    }
+
     private ConversaTecnic mapejarConversa(java.sql.ResultSet rs) throws java.sql.SQLException {
         ConversaTecnic c = new ConversaTecnic();
         c.setIdConversaTecnic(rs.getInt("id_conversa_tecnic"));

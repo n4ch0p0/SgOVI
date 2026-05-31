@@ -12,4 +12,10 @@ public interface ConversaDao {
     boolean existeixConversa(int idRequest, String dniAp);
 
     List<Conversa> getConversesByRequest(int idRequest);
+
+    /** Comprova si una conversa pertany a l'usuari (via la seua sol·licitud) */
+    boolean pertanyAUsuari(int idConversa, String dniUsuario);
+
+    /** Comprova si una conversa pertany a l'assistent personal */
+    boolean pertanyAAp(int idConversa, String dniAp);
 }

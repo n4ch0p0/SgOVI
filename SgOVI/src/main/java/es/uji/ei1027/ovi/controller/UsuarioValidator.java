@@ -4,7 +4,6 @@ import es.uji.ei1027.ovi.model.UsuarioOVI;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.validation.Validator;
 
 @Component
 public class UsuarioValidator implements Validator {
@@ -34,6 +33,8 @@ public class UsuarioValidator implements Validator {
 
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
             errors.rejectValue("email", "obligatori", "L'email és obligatori");
+        } else if (!usuario.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            errors.rejectValue("email", "format", "El format de l'email no és correcte");
         }
 
         if (usuario.getContrasenya() == null || usuario.getContrasenya().trim().isEmpty()) {
