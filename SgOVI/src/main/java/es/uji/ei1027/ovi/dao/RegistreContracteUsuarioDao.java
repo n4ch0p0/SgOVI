@@ -10,6 +10,8 @@ public interface RegistreContracteUsuarioDao {
     void addContracte(int idRequest, int idAp, LocalDate fechaInici, LocalDate fechaFin, String pdfPath);
     RegistreContracteUsuarioOvi getContracte(int id);
     void updateContracte(int id, LocalDate fechaInici, LocalDate fechaFin);
+    void updateEstatContracte(int id, String estat);
+    boolean teContracteActiu(String dniUsuario);
     List<RegistreContracteUsuarioOvi> getTodosLosContractes();
     Map<Integer, String> obtenerMapaNombresUsuariosPorContracte();
 }

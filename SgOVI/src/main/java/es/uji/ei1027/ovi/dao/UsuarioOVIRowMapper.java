@@ -18,6 +18,7 @@ public final class UsuarioOVIRowMapper implements RowMapper<UsuarioOVI> {
         u.setConsentimentInformat(rs.getBoolean("consentimentInformat"));
         u.setEstat(rs.getString("estat"));
         u.setMotiuRebuig(rs.getString("motiu_rebuig"));
+        u.setProjecteVida(rs.getString("projecte_vida"));
         return u;
     }
 }

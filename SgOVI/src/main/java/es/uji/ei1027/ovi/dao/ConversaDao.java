@@ -18,4 +18,7 @@ public interface ConversaDao {
 
     /** Comprova si una conversa pertany a l'assistent personal */
     boolean pertanyAAp(int idConversa, String dniAp);
+
+    /** Comprova si hi ha alguna conversa entre aquest AP i algun request d'aquest usuari */
+    boolean existeixConversaEntreApIUsuari(String dniAp, String dniUsuari);
 }

@@ -23,8 +23,8 @@
                             <select id="tipusServei" class="form-select"
                                     th:field="*{tipusServei}"
                                     th:classappend="${#fields.hasErrors('tipusServei')} ? 'is-invalid'">
-                                <option value="PAP">PAP (Professional d'Assistència Personal)</option>
-                                <option value="PATY">PATY (Acompanyament)</option>
+                                <option value="PAP">Professional d'Assistència Personal (PAP)</option>
+                                <option value="PATY">Professional d'Assistència Terapèutica Infantil (PATI)</option>
                             </select>
                             <div th:if="${#fields.hasErrors('tipusServei')}" th:errors="*{tipusServei}"
                                  class="invalid-feedback"></div>
@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a th:href="@{/usuario/solicitudes}" class="btn btn-secondary">
+                            <a th:href="@{/usuario/dashboard}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left me-1"></i>Cancel·lar
                             </a>
                             <button type="submit" class="btn btn-success px-5">

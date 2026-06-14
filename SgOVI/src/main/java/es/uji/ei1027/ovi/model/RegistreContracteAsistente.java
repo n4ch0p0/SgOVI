@@ -6,8 +6,13 @@ public class RegistreContracteAsistente {
     private int idSeleccion; // Mantenim el nom per compatibilitat amb l'HTML
     private LocalDate fechaInici;
     private LocalDate fechaFin;
-    private String dniUsuario; // Ara guarda el DNI del client
+    private String dniUsuario;
     private String pdfPath;
+    private String estat;
+    private String nomUsuari;
+    private String tipusServei;
+    private String preferencies;
+    private int idRequest;
 
     public RegistreContracteAsistente() {
     }
@@ -50,6 +55,46 @@ public class RegistreContracteAsistente {
 
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
+    }
+
+    public String getEstat() {
+        return estat;
+    }
+
+    public void setEstat(String estat) {
+        this.estat = estat;
+    }
+
+    public String getNomUsuari() {
+        return nomUsuari;
+    }
+
+    public void setNomUsuari(String nomUsuari) {
+        this.nomUsuari = nomUsuari;
+    }
+
+    public String getTipusServei() {
+        return tipusServei;
+    }
+
+    public void setTipusServei(String tipusServei) {
+        this.tipusServei = tipusServei;
+    }
+
+    public String getPreferencies() {
+        return preferencies;
+    }
+
+    public void setPreferencies(String preferencies) {
+        this.preferencies = preferencies;
+    }
+
+    public int getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(int idRequest) {
+        this.idRequest = idRequest;
     }
 
     @Override

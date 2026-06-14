@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/conversa")
@@ -135,7 +138,12 @@ public class ConversaController {
         if (session.getAttribute("tecnicLogueado") != null) {
             // Vista del tècnic: veu totes les converses
             model.addAttribute("converses", conversaTecnicDao.getAllConverses());
-            model.addAttribute("mapaNomsUsuaris", usuarioDao.obtenerMapaNombresUsuarios());
+            Map<String, String> mapaOrdenat = usuarioDao.obtenerMapaNombresUsuarios()
+                    .entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                             (e1, e2) -> e1, LinkedHashMap::new));
+            model.addAttribute("mapaNomsUsuaris", mapaOrdenat);
             model.addAttribute("perfil", "Tecnic");
             return "tecnic/list_comunicacions";
         } else if (usuario != null) {
@@ -161,7 +169,7 @@ public class ConversaController {
             redirectAttributes.addFlashAttribute("mensajeExito", "Conversa iniciada amb l'usuari.");
         }
 
-        return "redirect:/conversa/tecnic/list";
+        return "redirect:/conversa/tecnic/list#conv-" + dniUsuario;
     }
 
     @PostMapping("/tecnic/enviar")

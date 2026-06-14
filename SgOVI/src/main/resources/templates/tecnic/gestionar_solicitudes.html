@@ -7,7 +7,10 @@
   <nav th:replace="~{fragments/nav :: navbar}"></nav>
 
   <main class="container mt-4">
-    <h2><i class="bi bi-clipboard-check"></i> Sol·licituds d'Assistència Pendents</h2>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="mb-0"><i class="bi bi-clipboard-check"></i> Sol·licituds d'Assistència Pendents</h2>
+        <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Tornar al Menú</a>
+    </div>
     <p class="text-muted">Revisa les peticions en estat "Revisió". Aprova-les perquè la persona usuària puga començar a
       buscar els seus assistents, o rebutja-les si no procedeixen.</p>
     <hr>
@@ -20,7 +23,7 @@
               <th>Usuari</th>
               <th>Tipus Servei</th>
               <th>Preferències</th>
-              <th>Accions (Aprovar / Rebutjar)</th>
+              <th>Accions</th>
             </tr>
           </thead>
           <tbody>
@@ -34,16 +37,14 @@
                      class="btn btn-sm btn-outline-primary" title="Veure assistents compatibles">
                     <i class="bi bi-people-fill"></i> Candidats
                   </a>
-                  <button type="button" class="btn btn-sm btn-success" th:data-id="${req.id}"
-                          th:data-nom="${mapaNomsUsuaris[req.dniUsuario]}" th:data-tipus="${req.tipusServei}"
-                          th:data-pref="${req.preferencies}" onclick="mostrarModalAprovar(this)">
+                  <a th:href="@{/tecnic/confirmar-solicitud/{id}(id=${req.id}, accio='aprovar')}"
+                     class="btn btn-sm btn-success">
                     <i class="bi bi-check-circle"></i> Aprovar
-                  </button>
-                  <button type="button" class="btn btn-sm btn-danger" th:data-id="${req.id}"
-                          th:data-nom="${mapaNomsUsuaris[req.dniUsuario]}" th:data-tipus="${req.tipusServei}"
-                          th:data-pref="${req.preferencies}" onclick="mostrarModalRebutjar(this)">
+                  </a>
+                  <a th:href="@{/tecnic/confirmar-solicitud/{id}(id=${req.id}, accio='rebutjar')}"
+                     class="btn btn-sm btn-danger">
                     <i class="bi bi-x-circle"></i> Rebutjar
-                  </button>
+                  </a>
                 </div>
               </td>
             </tr>
@@ -55,87 +56,28 @@
       </div>
     </div>
 
-    <a th:href="@{/tecnic/dashboard}" class="btn btn-secondary mt-4">Tornar al Tauler</a>
-  </div>
-
-  <!-- Modal Aprovar Solicitud -->
-  <div class="modal fade" id="modalAprovar" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-success">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title"><i class="bi bi-check-circle-fill"></i> Confirmar Aprovació</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
-        </div>
-        <div class="modal-body">
-          <p>Estàs segur/a que vols <strong class="text-success">aprovar</strong> aquesta sol·licitud?</p>
-          <div class="alert alert-light border">
-            <strong>Usuari:</strong> <span id="aprovarNom"></span><br>
-            <strong>Tipus Servei:</strong> <span id="aprovarTipus"></span><br>
-            <strong>Preferències:</strong> <span id="aprovarPref"></span>
-          </div>
-          <p class="text-muted small">L'usuari podrà començar a buscar assistents compatibles per iniciar negociacions.
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i>
-            Cancel·lar</button>
-          <form th:action="@{/tecnic/aprobar-solicitud}" method="post" class="d-inline">
-            <input type="hidden" name="idRequest" id="aprovarIdInput" />
-            <input type="hidden" name="aceptada" value="true" />
-            <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Sí, Aprovar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Rebutjar Solicitud -->
-  <div class="modal fade" id="modalRebutjar" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-danger">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title"><i class="bi bi-x-circle-fill"></i> Confirmar Rebuig</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
-        </div>
-        <div class="modal-body">
-          <p>Estàs segur/a que vols <strong class="text-danger">rebutjar</strong> aquesta sol·licitud?</p>
-          <div class="alert alert-light border">
-            <strong>Usuari:</strong> <span id="rebutjarNom"></span><br>
-            <strong>Tipus Servei:</strong> <span id="rebutjarTipus"></span><br>
-            <strong>Preferències:</strong> <span id="rebutjarPref"></span>
-          </div>
-          <p class="text-muted small">La sol·licitud serà rebutjada i l'usuari no podrà buscar assistents amb aquesta
-            petició.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i>
-            Cancel·lar</button>
-          <form th:action="@{/tecnic/aprobar-solicitud}" method="post" class="d-inline">
-            <input type="hidden" name="idRequest" id="rebutjarIdInput" />
-            <input type="hidden" name="aceptada" value="false" />
-            <button type="submit" class="btn btn-danger"><i class="bi bi-x-circle"></i> Sí, Rebutjar</button>
-          </form>
-        </div>
-      </div>
-    </div>
   </main>
 
+  <!-- Toast d'èxit -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${mensajeExito}">
+    <div id="toastSolicitud" class="toast align-items-center text-bg-success border-0"
+         role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <span th:text="${mensajeExito}"></span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast" aria-label="Tancar"></button>
+      </div>
+    </div>
+  </div>
+
+  <th:block th:if="${mensajeExito}">
   <script>
-    function mostrarModalAprovar(btn) {
-      document.getElementById('aprovarNom').textContent = btn.dataset.nom;
-      document.getElementById('aprovarTipus').textContent = btn.dataset.tipus;
-      document.getElementById('aprovarPref').textContent = btn.dataset.pref;
-      document.getElementById('aprovarIdInput').value = btn.dataset.id;
-      new bootstrap.Modal(document.getElementById('modalAprovar')).show();
-    }
-    function mostrarModalRebutjar(btn) {
-      document.getElementById('rebutjarNom').textContent = btn.dataset.nom;
-      document.getElementById('rebutjarTipus').textContent = btn.dataset.tipus;
-      document.getElementById('rebutjarPref').textContent = btn.dataset.pref;
-      document.getElementById('rebutjarIdInput').value = btn.dataset.id;
-      new bootstrap.Modal(document.getElementById('modalRebutjar')).show();
-    }
+    new bootstrap.Toast(document.getElementById('toastSolicitud'), { delay: 5000 }).show();
   </script>
+  </th:block>
 </body>
 
 </html>

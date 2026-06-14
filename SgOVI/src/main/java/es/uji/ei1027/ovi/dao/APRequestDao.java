@@ -8,8 +8,12 @@ public interface APRequestDao {
     void addRequest(APRequest request);
     List<APRequest> getRequestsByUsuario(String dniUsuario);
     List<APRequest> getRequestsPendientes();
+    List<APRequest> getRequestsAprovades();
+    List<APRequest> getRequestsEnNegociacio();
     void updateEstado(int id, String estat);
 
     APRequest getRequest(int idRequest);
     Map<Integer, String> obtenerMapaNombresRequests();
+    boolean teRequestsActives(String dniUsuario);
+    void tancarRequestsActivesPerUsuari(String dniUsuario);
 }

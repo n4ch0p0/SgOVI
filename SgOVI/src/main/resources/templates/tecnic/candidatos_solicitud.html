@@ -35,70 +35,116 @@
         </div>
     </div>
 
-    <!-- Llista de candidats ordenats per compatibilitat -->
-    <h5 class="mb-3">
-        <i class="bi bi-sort-down me-1"></i>
-        Assistents compatibles
-        <span class="badge bg-secondary ms-1" th:text="${#lists.size(candidatos)}"></span>
-        <small class="text-muted fw-normal ms-2" style="font-size:.8rem;">
-            Ordenats per proximitat geogràfica i formació rellevant
-        </small>
-    </h5>
+    <!-- Llista de candidats -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="mb-0">
+            <i class="bi bi-sort-down me-1"></i>
+            Assistents compatibles
+            <span class="badge bg-secondary ms-1" th:text="${#lists.size(candidatos)}"></span>
+            <small class="text-muted fw-normal ms-2" style="font-size:.8rem;">
+                Ordenats per proximitat geogràfica i formació rellevant
+            </small>
+        </h5>
+        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Marca els candidats que vols que veja el client</small>
+    </div>
 
     <div th:if="${#lists.isEmpty(candidatos)}" class="alert alert-warning">
         <i class="bi bi-exclamation-triangle me-1"></i>
         No hi ha assistents actius i acceptats del tipus <strong th:text="${peticion.tipusServei}"></strong> disponibles ara mateix.
     </div>
 
-    <div class="row g-3" th:unless="${#lists.isEmpty(candidatos)}">
-        <div class="col-md-6" th:each="cand, iterStat : ${candidatos}">
-            <div class="card h-100 shadow-sm"
-                 th:classappend="${iterStat.index == 0} ? 'border-success' : 'border-light'">
-                <div class="card-header d-flex justify-content-between align-items-center"
-                     th:classappend="${iterStat.index == 0} ? 'bg-success text-white' : 'bg-light'">
-                    <span class="fw-semibold">
-                        <i class="bi bi-person-fill me-1"></i>
-                        <span th:text="${cand.nom + ' ' + cand.cognoms}"></span>
-                    </span>
-                    <span th:if="${iterStat.index == 0}" class="badge bg-white text-success">
-                        <i class="bi bi-star-fill me-1"></i>Millor coincidència
-                    </span>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0 small">
-                        <dt class="col-sm-5 text-muted"><i class="bi bi-geo-alt-fill me-1 text-success"></i>Proximitat</dt>
-                        <dd class="col-sm-7 fw-semibold text-success" th:text="${cand.proximitatGeografica}"></dd>
+    <form th:unless="${#lists.isEmpty(candidatos)}"
+          th:action="@{/tecnic/solicitudes/{id}/candidatos/guardar(id=${peticion.id})}" method="post">
 
-                        <dt class="col-sm-5 text-muted"><i class="bi bi-mortarboard-fill me-1"></i>Formació</dt>
-                        <dd class="col-sm-7" th:text="${cand.formacioAcademica}"></dd>
+        <div class="row g-3">
+            <div class="col-md-6" th:each="cand, iterStat : ${candidatos}">
+                <div class="card h-100 shadow-sm"
+                     th:classappend="${#lists.isEmpty(seleccioActual) || seleccioActual.contains(cand.dni)} ? 'border-success border-2' : 'border-light'">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         th:classappend="${#lists.isEmpty(seleccioActual) || seleccioActual.contains(cand.dni)} ? 'bg-success text-white' : 'bg-light'">
+                        <span class="fw-semibold">
+                            <i class="bi bi-person-fill me-1"></i>
+                            <span th:text="${cand.nom + ' ' + cand.cognoms}"></span>
+                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span th:if="${iterStat.index == 0}" class="badge bg-white text-success small">
+                                <i class="bi bi-star-fill me-1"></i>Millor coincidència
+                            </span>
+                            <input type="checkbox"
+                                   class="form-check-input mt-0"
+                                   style="width:1.2em; height:1.2em; cursor:pointer;"
+                                   name="dniAps"
+                                   th:value="${cand.dni}"
+                                   th:checked="${#lists.isEmpty(seleccioActual) || seleccioActual.contains(cand.dni)}"
+        >
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0 small">
+                            <dt class="col-sm-5 text-muted"><i class="bi bi-geo-alt-fill me-1 text-success"></i>Proximitat</dt>
+                            <dd class="col-sm-7 fw-semibold text-success" th:text="${cand.proximitatGeografica}"></dd>
 
-                        <dt class="col-sm-5 text-muted"><i class="bi bi-briefcase-fill me-1"></i>Experiència</dt>
-                        <dd class="col-sm-7" th:text="${cand.experienciaPrevia}"></dd>
+                            <dt class="col-sm-5 text-muted"><i class="bi bi-mortarboard-fill me-1"></i>Formació</dt>
+                            <dd class="col-sm-7" th:text="${cand.formacioAcademica}"></dd>
 
-                        <dt class="col-sm-5 text-muted"><i class="bi bi-check-circle-fill me-1 text-primary"></i>Disponible</dt>
-                        <dd class="col-sm-7">
-                            <span th:if="${cand.actiu}" class="badge bg-success">Actiu</span>
-                            <span th:unless="${cand.actiu}" class="badge bg-secondary">No disponible</span>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="card-footer bg-transparent text-end">
-                    <span class="text-muted small">DNI: </span>
-                    <span class="font-monospace small" th:text="${cand.dni}"></span>
+                            <dt class="col-sm-5 text-muted"><i class="bi bi-briefcase-fill me-1"></i>Experiència</dt>
+                            <dd class="col-sm-7" th:text="${cand.experienciaPrevia}"></dd>
+
+                            <dt class="col-sm-5 text-muted"><i class="bi bi-check-circle-fill me-1 text-primary"></i>Disponible</dt>
+                            <dd class="col-sm-7">
+                                <span th:if="${cand.actiu}" class="badge bg-success">Actiu</span>
+                                <span th:unless="${cand.actiu}" class="badge bg-secondary">No disponible</span>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="card-footer bg-transparent text-end">
+                        <span class="text-muted small">DNI: </span>
+                        <span class="font-monospace small" th:text="${cand.dni}"></span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="mt-4 d-flex gap-2">
+        <div class="mt-4 d-flex justify-content-between align-items-center">
+            <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Tornar a Sol·licituds
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save me-1"></i>Guardar selecció
+            </button>
+        </div>
+
+    </form>
+
+    <div th:if="${#lists.isEmpty(candidatos)}" class="mt-4">
         <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i>Tornar a Sol·licituds
-        </a>
-        <a th:href="@{/tecnic/negociacions/{id}(id=${peticion.id})}" class="btn btn-outline-primary">
-            <i class="bi bi-chat-dots me-1"></i>Veure Negociacions
         </a>
     </div>
 
 </main>
+
+<!-- Toast d'èxit -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${mensajeExito}">
+    <div id="toastCandidats" class="toast align-items-center text-bg-success border-0"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${mensajeExito}"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:if="${mensajeExito}">
+<script>
+    new bootstrap.Toast(document.getElementById('toastCandidats'), { delay: 5000 }).show();
+</script>
+</th:block>
+
 </body>
 </html>

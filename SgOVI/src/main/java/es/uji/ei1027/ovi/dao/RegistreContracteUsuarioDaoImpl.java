@@ -23,24 +23,29 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
 
     @Override
     public List<RegistreContracteUsuarioOvi> getContractesByUsuario(String dniUsuario) {
-        String sql = "SELECT c.id_contracte, ap.dni AS dni_assistent, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, c.fecha_inici, c.fecha_fin, c.pdf_path "
-                +
-                "FROM RegistreContracte c " +
-                "JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap " +
-                "JOIN APRequest r ON c.id_request = r.id_request " +
-                "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario " +
-                "WHERE u.dni = ?";
+        String sql = "SELECT c.id_contracte, c.fecha_inici, c.fecha_fin, c.pdf_path, "
+                + "ap.dni AS dni_assistent, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, "
+                + "r.tipusservei, r.preferencies, "
+                + "u.nom AS nom_usuari, u.cognoms AS cognoms_usuari "
+                + "FROM RegistreContracte c "
+                + "JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap "
+                + "JOIN APRequest r ON c.id_request = r.id_request "
+                + "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario "
+                + "WHERE u.dni = ?";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
             c.setId(rs.getInt("id_contracte"));
             c.setDniAsistente(rs.getString("dni_assistent"));
+            c.setNomAssistent(rs.getString("nom_ap") + " " + rs.getString("cognoms_ap"));
+            c.setNomUsuari(rs.getString("nom_usuari") + " " + rs.getString("cognoms_usuari"));
+            c.setTipusServei(rs.getString("tipusservei"));
+            c.setPreferencies(rs.getString("preferencies"));
             if (rs.getDate("fecha_inici") != null)
                 c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
             if (rs.getDate("fecha_fin") != null)
                 c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
-
-            c.setEstat("Actiu");
+            c.setEstat("Formalitzat");
             c.setPdfPath(rs.getString("pdf_path"));
             return c;
         }, dniUsuario);
@@ -49,35 +54,59 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
     @Transactional
     @Override
     public void addContracte(int idRequest, int idAp, LocalDate fechaInici, LocalDate fechaFin, String pdfPath) {
-        // 1. Inserim el contracte directament usant la request i l'assistent
         String sqlInsert = "INSERT INTO RegistreContracte (id_request, id_ap, fecha_inici, fecha_fin, pdf_path) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlInsert, idRequest, idAp, fechaInici, fechaFin, pdfPath);
 
-        // 2. Actualitzem l'estat de la petició perquè ja no aparega com "Aprovada" sinó
-        // tancada
         String sqlUpdate = "UPDATE APRequest SET estat = 'Tancada_Contracte'::estat_apr WHERE id_request = ?";
         jdbcTemplate.update(sqlUpdate, idRequest);
     }
 
     @Override
     public RegistreContracteUsuarioOvi getContracte(int id) {
-        String sql = "SELECT c.id_contracte, ap.dni AS dni_assistent, c.fecha_inici, c.fecha_fin, c.pdf_path " +
-                "FROM RegistreContracte c JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap WHERE c.id_contracte = ?";
+        String sql = "SELECT c.id_contracte, c.fecha_inici, c.fecha_fin, c.pdf_path, "
+                + "ap.dni AS dni_assistent, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, "
+                + "r.tipusservei, r.preferencies, "
+                + "u.nom AS nom_usuari, u.cognoms AS cognoms_usuari "
+                + "FROM RegistreContracte c "
+                + "JOIN AssistentPersonal ap ON c.id_ap = ap.id_ap "
+                + "JOIN APRequest r ON c.id_request = r.id_request "
+                + "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario "
+                + "WHERE c.id_contracte = ?";
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
                 c.setId(rs.getInt("id_contracte"));
                 c.setDniAsistente(rs.getString("dni_assistent"));
+                c.setNomAssistent(rs.getString("nom_ap") + " " + rs.getString("cognoms_ap"));
+                c.setNomUsuari(rs.getString("nom_usuari") + " " + rs.getString("cognoms_usuari"));
+                c.setTipusServei(rs.getString("tipusservei"));
+                c.setPreferencies(rs.getString("preferencies"));
                 if (rs.getDate("fecha_inici") != null)
                     c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
                 if (rs.getDate("fecha_fin") != null)
                     c.setDataFi(rs.getDate("fecha_fin").toLocalDate());
+                c.setEstat("Formalitzat");
                 c.setPdfPath(rs.getString("pdf_path"));
                 return c;
             }, id);
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public void updateEstatContracte(int id, String estat) {
+        jdbcTemplate.update("UPDATE RegistreContracte SET estat = ? WHERE id_contracte = ?", estat, id);
+    }
+
+    @Override
+    public boolean teContracteActiu(String dniUsuario) {
+        String sql = "SELECT COUNT(*) FROM RegistreContracte c "
+                + "JOIN APRequest r ON c.id_request = r.id_request "
+                + "JOIN UsuarioOVI u ON r.id_usuario = u.id_usuario "
+                + "WHERE u.dni = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, dniUsuario);
+        return count != null && count > 0;
     }
 
     @Override
@@ -99,7 +128,8 @@ public class RegistreContracteUsuarioDaoImpl implements RegistreContracteUsuario
             RegistreContracteUsuarioOvi c = new RegistreContracteUsuarioOvi();
             c.setId(rs.getInt("id_contracte"));
             c.setDniAsistente(rs.getString("dni_assistent"));
-
+            c.setNomAssistent(rs.getString("nom_ap") + " " + rs.getString("cognoms_ap"));
+            c.setNomUsuari(rs.getString("nom_usuari") + " " + rs.getString("cognoms_usuari"));
             if (rs.getDate("fecha_inici") != null)
                 c.setDataInici(rs.getDate("fecha_inici").toLocalDate());
             if (rs.getDate("fecha_fin") != null)

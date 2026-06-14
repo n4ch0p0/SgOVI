@@ -1,15 +1,13 @@
 package es.uji.ei1027.ovi.controller;
 
 import es.uji.ei1027.ovi.model.AssistentPersonal;
+import es.uji.ei1027.ovi.model.UsuarioOVI;
 import es.uji.ei1027.ovi.dao.ActivitatFormacioDao;
 import es.uji.ei1027.ovi.dao.AsistenteDao;
+import es.uji.ei1027.ovi.dao.ConversaDao;
 import es.uji.ei1027.ovi.dao.RegistreContracteAsistenteDao;
 import es.uji.ei1027.ovi.dao.UsuarioDao;
 import es.uji.ei1027.ovi.dao.APRequestDao;
-import es.uji.ei1027.ovi.model.ActivitatFormacio;
-import es.uji.ei1027.ovi.model.Missatge;
-import es.uji.ei1027.ovi.model.MissatgeTecnic;
-import es.uji.ei1027.ovi.model.RegistreContracteAsistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.validation.BindingResult;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/asistente")
@@ -39,6 +35,9 @@ public class AsistenteController {
 
     @Autowired
     private APRequestDao apRequestDao;
+
+    @Autowired
+    private ConversaDao conversaDao;
 
     // PÀGINA D'ESPERA PER ALS PENDENTS
     @GetMapping("/espera")
@@ -117,6 +116,11 @@ public class AsistenteController {
 
         // Per seguretat, mantenim les dades crítiques que no s'editen al formulari
         asistenteActualizado.setDni(asistenteSesion.getDni());
+        asistenteActualizado.setNom(asistenteSesion.getNom());
+        asistenteActualizado.setCognoms(asistenteSesion.getCognoms());
+        asistenteActualizado.setEmail(asistenteSesion.getEmail());
+        asistenteActualizado.setTelefono(asistenteSesion.getTelefono());
+        asistenteActualizado.setContrasenya(asistenteSesion.getContrasenya());
         asistenteActualizado.setTipus(asistenteSesion.getTipus());
         asistenteActualizado.setEstat(asistenteSesion.getEstat());
         asistenteActualizado.setMotiuRebuig(asistenteSesion.getMotiuRebuig());
@@ -126,7 +130,7 @@ public class AsistenteController {
         session.setAttribute("asistenteLogueado", asistenteActualizado);
 
         redirectAttributes.addFlashAttribute("mensajeExito", "El teu perfil s'ha actualitzat correctament.");
-        return "redirect:/asistente/dashboard";
+        return "redirect:/asistente/perfil";
     }
 
     // 2. EL BOTÓ DE "GESTIONAR CONTRACTES"
@@ -165,7 +169,25 @@ public class AsistenteController {
     @GetMapping("/missatges")
     public String verMensajes(HttpSession session) {
         if (session.getAttribute("asistenteLogueado") == null) return "redirect:/login";
-        // Redirigim al controlador global de converses que vam crear a la fase 3
         return "redirect:/conversa/list";
     }
+
+    // 5. PROJECTE DE VIDA D'UN CLIENT (accessible una vegada hi ha conversa)
+    @GetMapping("/client/projecte-vida")
+    public String veureProjecteVidaClient(@RequestParam("dniUsuari") String dniUsuari,
+                                          HttpSession session, Model model) {
+        AssistentPersonal asistente = (AssistentPersonal) session.getAttribute("asistenteLogueado");
+        if (asistente == null || !"Acceptat".equals(asistente.getEstat())) return "redirect:/login";
+        if (!conversaDao.existeixConversaEntreApIUsuari(asistente.getDni(), dniUsuari))
+            return "redirect:/conversa/list";
+
+        UsuarioOVI client = usuarioDao.getUsuario(dniUsuari);
+        if (client == null) return "redirect:/conversa/list";
+
+        model.addAttribute("nomUsuari", client.getNom() + " " + client.getCognoms());
+        model.addAttribute("projecteVida", client.getProjecteVida());
+        model.addAttribute("backUrl", "/conversa/list");
+        return "usuario/projecte_vida_readonly";
+    }
+
 }

@@ -53,7 +53,12 @@
             <div class="form-check mb-4">
               <input class="form-check-input" type="checkbox" th:field="*{consentimentInformat}" id="consentiment">
               <label class="form-check-label" for="consentiment">
-                Accepte el consentiment informat (Requerit)
+                He llegit i accepte el
+                <button type="button" class="btn btn-link p-0 align-baseline text-decoration-underline"
+                        data-bs-toggle="modal" data-bs-target="#modalConsentiment">
+                  consentiment informat i la política de tractament de dades
+                </button>
+                <span class="text-danger fw-semibold">(Requerit)</span>
               </label>
               <div th:if="${#fields.hasErrors('consentimentInformat')}" th:errors="*{consentimentInformat}" class="error"></div>
             </div>
@@ -64,5 +69,106 @@
     </div>
   </div>
 </main>
+
+<!-- Modal: Consentiment Informat i Política de Tractament de Dades -->
+<div class="modal fade" id="modalConsentiment" tabindex="-1" aria-labelledby="modalConsentimentLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h2 class="modal-title h5" id="modalConsentimentLabel">
+          <i class="bi bi-shield-check me-2"></i>Consentiment Informat i Política de Tractament de Dades
+        </h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+      </div>
+      <div class="modal-body">
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">1. Responsable del tractament</h3>
+          <p class="mb-0">
+            <strong>Oficina de Vida Independent (OVI) de Castelló</strong><br>
+            Correu de contacte: <a href="mailto:ovi@castello.es">ovi@castello.es</a>
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">2. Dades que es recullen</h3>
+          <p class="mb-1">En registrar-vos, recollim les dades personals següents:</p>
+          <ul class="mb-0">
+            <li><strong>Identificació:</strong> DNI, nom i cognoms</li>
+            <li><strong>Contacte:</strong> correu electrònic i telèfon</li>
+            <li><strong>Accés:</strong> contrasenya (emmagatzemada de forma xifrada)</li>
+          </ul>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">3. Finalitat del tractament</h3>
+          <p class="mb-0">
+            Les vostres dades es tractaran exclusivament per gestionar el vostre compte d'usuari a la plataforma OVI
+            i facilitar la prestació del servei d'assistència personal per a la vida independent, incloent-hi
+            la coordinació amb assistents personals i la gestió de contractes de servei.
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">4. Base jurídica</h3>
+          <p class="mb-0">
+            El tractament es basa en el vostre <strong>consentiment exprés</strong> (art.&nbsp;6.1.a del Reglament
+            General de Protecció de Dades — RGPD) i en l'execució de les mesures necessàries per a la prestació
+            dels serveis sol·licitats (art.&nbsp;6.1.b RGPD).
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">5. Conservació de les dades</h3>
+          <p class="mb-0">
+            Les dades es conservaran mentre sigueu usuari actiu del servei. Un cop doneu de baixa,
+            seran suprimides en un termini màxim de <strong>5 anys</strong>, llevat que la normativa
+            vigent en requerisca una conservació superior.
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">6. Destinataris</h3>
+          <p class="mb-0">
+            Les dades no seran cedides a tercers, excepte per obligació legal o per als assistents personals
+            assignats al vostre servei, en la mesura estrictament necessària per a la prestació d'aquest.
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3 class="h6 text-primary fw-bold">7. Els vostres drets</h3>
+          <p class="mb-1">Podeu exercir en qualsevol moment els drets d':</p>
+          <ul class="mb-1">
+            <li><strong>Accés</strong> a les vostres dades personals</li>
+            <li><strong>Rectificació</strong> de dades inexactes o incompletes</li>
+            <li><strong>Supressió</strong> («dret a l'oblit»)</li>
+            <li><strong>Limitació</strong> del tractament</li>
+            <li><strong>Portabilitat</strong> de les dades</li>
+            <li><strong>Oposició</strong> al tractament</li>
+          </ul>
+          <p class="mb-0">
+            Per exercir qualsevol d'aquests drets, contacteu amb nosaltres a
+            <a href="mailto:ovi@castello.es">ovi@castello.es</a>.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="h6 text-primary fw-bold">8. Retirada del consentiment</h3>
+          <p class="mb-0">
+            Podeu retirar el vostre consentiment en qualsevol moment sense que això afecte la licitud
+            del tractament basat en el consentiment previ a la seua retirada. Així mateix, teniu dret
+            a presentar una reclamació davant l'<strong>Agència Espanyola de Protecció de Dades (AEPD)</strong>
+            si considereu que el tractament vulnera la normativa vigent.
+          </p>
+        </section>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">He entès la informació</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

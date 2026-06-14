@@ -11,6 +11,7 @@
             <h2 style="margin-bottom: .25rem;">Els meus Contractes Actius</h2>
             <p class="text-muted mb-0" style="font-size: .875rem;">Consulta i gestiona els teus acords d'assistència personal.</p>
         </div>
+        <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Tornar al Menú</a>
     </div>
 
     <div class="card shadow-sm">
@@ -27,15 +28,22 @@
                 </thead>
                 <tbody>
                 <tr th:each="c : ${registreContracteUsuarioOvis}">
-                    <td th:text="${mapaNomsAssistents[c.dniAsistente]}" class="fw-bold"></td>
+                    <td th:text="${c.nomAssistent}" class="fw-bold"></td>
                     <td th:text="${#temporals.format(c.dataInici, 'dd/MM/yyyy')}"></td>
                     <td th:text="${c.dataFi != null ? #temporals.format(c.dataFi, 'dd/MM/yyyy') : 'Indefinit'}"></td>
                     <td>
-                        <a th:href="@{/usuario/contractes/editar/{id}(id=${c.id})}" class="btn btn-sm btn-warning text-white">
-                            <i class="bi bi-pencil me-1"></i> Editar
+                        <a th:href="@{/usuario/contractes/{id}/veure(id=${c.id})}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-file-earmark-text me-1"></i>Veure
+                        </a>
+                        <a th:href="@{/usuario/contractes/editar/{id}(id=${c.id})}" class="btn btn-sm btn-outline-secondary ms-1">
+                            <i class="bi bi-pencil me-1"></i>Editar
                         </a>
                     </td>
-                    <td><span class="badge bg-success">Formalitzat</span></td>
+                    <td>
+                        <span th:if="${c.estat == 'Formalitzat'}" class="badge bg-success">Formalitzat</span>
+                        <span th:if="${c.estat == 'Pendent_AP'}" class="badge bg-warning text-dark">Pendent confirmació</span>
+                        <span th:if="${c.estat == 'Rebutjat_AP'}" class="badge bg-danger">Rebutjat per l'assistent</span>
+                    </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(registreContracteUsuarioOvis)}">
                     <td colspan="5" class="text-center py-5 text-muted">
@@ -48,7 +56,6 @@
         </div>
     </div>
 
-    <a th:href="@{/usuario/dashboard}" class="btn btn-secondary mt-3"><i class="bi bi-arrow-left me-1"></i> Tornar al Tauler</a>
   </main>
 </body>
 

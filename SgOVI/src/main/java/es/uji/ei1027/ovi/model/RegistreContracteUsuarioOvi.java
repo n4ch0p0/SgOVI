@@ -9,6 +9,10 @@ public class RegistreContracteUsuarioOvi {
     private LocalDate dataFi;
     private String estat;
     private String pdfPath;
+    private String nomAssistent;
+    private String nomUsuari;
+    private String tipusServei;
+    private String preferencies;
 
     public RegistreContracteUsuarioOvi() {
     }
@@ -60,6 +64,38 @@ public class RegistreContracteUsuarioOvi {
 
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
+    }
+
+    public String getNomAssistent() {
+        return nomAssistent;
+    }
+
+    public void setNomAssistent(String nomAssistent) {
+        this.nomAssistent = nomAssistent;
+    }
+
+    public String getNomUsuari() {
+        return nomUsuari;
+    }
+
+    public void setNomUsuari(String nomUsuari) {
+        this.nomUsuari = nomUsuari;
+    }
+
+    public String getTipusServei() {
+        return tipusServei;
+    }
+
+    public void setTipusServei(String tipusServei) {
+        this.tipusServei = tipusServei;
+    }
+
+    public String getPreferencies() {
+        return preferencies;
+    }
+
+    public void setPreferencies(String preferencies) {
+        this.preferencies = preferencies;
     }
 
     @Override

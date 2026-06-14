@@ -3,6 +3,30 @@
 <head th:replace="~{fragments/head :: head('Iniciar Sessió - OVI')}"></head>
 <body>
 <nav th:replace="~{fragments/nav :: navbar}"></nav>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${param.expirat}">
+    <div id="toastExpirat" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body text-dark">
+                <i class="bi bi-clock-history me-2"></i>
+                La teua sessió ha caducat per inactivitat. Torna a iniciar sessió.
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${param.registrado}">
+    <div id="toastRegistrado" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Sol·licitud creada correctament! Quan siga validada per un tècnic podràs accedir.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
 <main class="container mt-5">
     <div class="ovi-login-card">
         <div class="card">
@@ -11,6 +35,11 @@
                     <i class="bi bi-shield-lock-fill"></i>
                     Iniciar Sessió
                 </h3>
+                <div th:if="${error}" class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
                 <form th:action="@{/login}" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">DNI</label>
@@ -29,5 +58,18 @@
         </div>
     </div>
 </main>
+
+<th:block th:if="${param.expirat}">
+<script>
+    new bootstrap.Toast(document.getElementById('toastExpirat'), { delay: 7000 }).show();
+</script>
+</th:block>
+
+<th:block th:if="${param.registrado}">
+<script>
+    const toastEl = document.getElementById('toastRegistrado');
+    if (toastEl) new bootstrap.Toast(toastEl, { delay: 6000 }).show();
+</script>
+</th:block>
 </body>
 </html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Donar de Baixa Usuari - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<main class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-x-fill me-2"></i>Donar de Baixa — Usuari</h5>
+                </div>
+                <div class="card-body">
+
+                    <div class="alert alert-light border mb-3">
+                        <p class="mb-1"><strong>Nom:</strong> <span th:text="${persona.nom + ' ' + persona.cognoms}"></span></p>
+                        <p class="mb-0"><strong>DNI:</strong> <span class="font-monospace" th:text="${persona.dni}"></span></p>
+                    </div>
+
+                    <!-- Blocat: té contracte actiu -->
+                    <div th:if="${teContracte}" class="alert alert-danger">
+                        <i class="bi bi-x-octagon-fill me-1"></i>
+                        <strong>Acció no permesa.</strong> Aquest usuari té un contracte actiu en vigor.
+                        Cal tancar el contracte abans de poder donar-lo de baixa.
+                    </div>
+
+                    <!-- Permès: sense contracte -->
+                    <div th:unless="${teContracte}">
+                        <div th:if="${requestsActives}" class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            <strong>Atenció:</strong> Aquest usuari té sol·licituds en estat
+                            <em>Revisió</em> o <em>Aprovada</em>. Seran cancel·lades automàticament.
+                        </div>
+                        <p class="text-muted small mt-2">
+                            L'usuari quedarà marcat com a <strong>Rebutjat</strong> i no podrà accedir al sistema.
+                            Aquesta acció no es pot desfer.
+                        </p>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-3">
+                        <a th:href="@{/tecnic/usuarios}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                        </a>
+                        <form th:unless="${teContracte}"
+                              th:action="@{/tecnic/baixa-usuari/{dni}(dni=${persona.dni})}"
+                              method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-person-x-fill me-1"></i>Sí, Donar de Baixa
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

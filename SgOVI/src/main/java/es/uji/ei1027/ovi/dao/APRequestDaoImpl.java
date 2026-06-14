@@ -65,6 +65,24 @@ public class APRequestDaoImpl implements APRequestDao {
     }
 
     @Override
+    public List<APRequest> getRequestsAprovades() {
+        String sql = "SELECT a.*, u.dni as dni_usuari FROM aprequest a " +
+                "JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
+                "WHERE a.estat = 'Aprovada'";
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> {
+                    APRequest r = new APRequest();
+                    r.setId(rs.getInt("id_request"));
+                    r.setDniUsuario(rs.getString("dni_usuari"));
+                    r.setTipusServei(rs.getString("tipusservei"));
+                    r.setPreferencies(rs.getString("preferencies"));
+                    r.setEstat(rs.getString("estat"));
+                    return r;
+                });
+    }
+
+    @Override
     public void updateEstado(int id, String estat) {
         jdbcTemplate.update("UPDATE aprequest SET estat = ?::estat_apr WHERE id_request = ?", estat, id);
     }
@@ -88,6 +106,39 @@ public class APRequestDaoImpl implements APRequestDao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<APRequest> getRequestsEnNegociacio() {
+        String sql = "SELECT a.*, u.dni as dni_usuari FROM aprequest a " +
+                     "JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
+                     "WHERE a.estat = 'Aprovada' " +
+                     "AND EXISTS (SELECT 1 FROM conversa c WHERE c.id_request = a.id_request)";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            APRequest r = new APRequest();
+            r.setId(rs.getInt("id_request"));
+            r.setDniUsuario(rs.getString("dni_usuari"));
+            r.setTipusServei(rs.getString("tipusservei"));
+            r.setPreferencies(rs.getString("preferencies"));
+            r.setEstat(rs.getString("estat"));
+            return r;
+        });
+    }
+
+    @Override
+    public boolean teRequestsActives(String dniUsuario) {
+        String sql = "SELECT COUNT(*) FROM aprequest a JOIN usuarioovi u ON a.id_usuario = u.id_usuario " +
+                     "WHERE u.dni = ? AND a.estat IN ('Revisio'::estat_apr, 'Aprovada'::estat_apr)";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, dniUsuario);
+        return count != null && count > 0;
+    }
+
+    @Override
+    public void tancarRequestsActivesPerUsuari(String dniUsuario) {
+        String sql = "UPDATE aprequest SET estat = 'Rebutjada'::estat_apr " +
+                     "WHERE id_usuario = (SELECT id_usuario FROM usuarioovi WHERE dni = ?) " +
+                     "AND estat IN ('Revisio'::estat_apr, 'Aprovada'::estat_apr)";
+        jdbcTemplate.update(sql, dniUsuario);
     }
 
     @Override

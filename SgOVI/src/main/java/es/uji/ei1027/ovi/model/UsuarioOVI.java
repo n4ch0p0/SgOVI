@@ -10,6 +10,7 @@ public class UsuarioOVI {
     private Boolean consentimentInformat;
     private String estat;
     private String motiuRebuig;
+    private String projecteVida;
 
     public UsuarioOVI() {}
 
@@ -39,6 +40,9 @@ public class UsuarioOVI {
 
     public String getMotiuRebuig() { return motiuRebuig; }
     public void setMotiuRebuig(String motiuRebuig) { this.motiuRebuig = motiuRebuig; }
+
+    public String getProjecteVida() { return projecteVida; }
+    public void setProjecteVida(String projecteVida) { this.projecteVida = projecteVida; }
 
     @Override
     public String toString() {

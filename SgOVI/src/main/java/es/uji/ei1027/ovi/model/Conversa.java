@@ -10,6 +10,9 @@ public class Conversa {
     private int idAp;
     private LocalDateTime dataInici;
     private String nomAp;
+    private String dniUsuari;
+    private boolean apActiu = true;
+    private boolean usuariActiu = true;
     private List<Missatge> missatges = new ArrayList<>();
 
     public Conversa() {
@@ -53,6 +56,25 @@ public class Conversa {
 
     public void setNomAp(String nomAp) {
         this.nomAp = nomAp;
+    }
+
+    public String getDniUsuari() { return dniUsuari; }
+    public void setDniUsuari(String dniUsuari) { this.dniUsuari = dniUsuari; }
+
+    public boolean isApActiu() {
+        return apActiu;
+    }
+
+    public void setApActiu(boolean apActiu) {
+        this.apActiu = apActiu;
+    }
+
+    public boolean isUsuariActiu() {
+        return usuariActiu;
+    }
+
+    public void setUsuariActiu(boolean usuariActiu) {
+        this.usuariActiu = usuariActiu;
     }
 
     public List<Missatge> getMissatges() {

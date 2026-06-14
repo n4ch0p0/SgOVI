@@ -26,7 +26,7 @@ public class ConversaDaoImpl implements ConversaDao {
 
     @Override
     public List<Conversa> getConversesByUsuario(String dniUsuario) {
-        String sql = "SELECT c.*, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap " +
+        String sql = "SELECT c.*, ap.nom AS nom_ap, ap.cognoms AS cognoms_ap, ap.actiu AS ap_actiu " +
                 "FROM Conversa c " +
                 "JOIN aprequest r ON c.id_request = r.id_request " +
                 "JOIN usuarioovi u ON r.id_usuario = u.id_usuario " +
@@ -36,6 +36,7 @@ public class ConversaDaoImpl implements ConversaDao {
         List<Conversa> converses = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Conversa c = mapejarConversa(rs);
             c.setNomAp(rs.getString("nom_ap") + " " + rs.getString("cognoms_ap"));
+            c.setApActiu(rs.getBoolean("ap_actiu"));
             return c;
         }, dniUsuario);
 
@@ -48,7 +49,7 @@ public class ConversaDaoImpl implements ConversaDao {
 
     @Override
     public List<Conversa> getConversesByAp(String dniAp) {
-        String sql = "SELECT c.*, u.nom AS nom_usuari, u.cognoms AS cognoms_usuari " +
+        String sql = "SELECT c.*, u.nom AS nom_usuari, u.cognoms AS cognoms_usuari, u.estat AS usuari_estat, u.dni AS dni_usuari " +
                 "FROM Conversa c " +
                 "JOIN assistentpersonal ap ON c.id_ap = ap.id_ap " +
                 "JOIN aprequest r ON c.id_request = r.id_request " +
@@ -57,6 +58,8 @@ public class ConversaDaoImpl implements ConversaDao {
 
         List<Conversa> converses = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Conversa c = mapejarConversa(rs);
+            c.setUsuariActiu(!"Rebutjat".equals(rs.getString("usuari_estat")));
+            c.setDniUsuari(rs.getString("dni_usuari"));
             return c;
         }, dniAp);
 
@@ -100,6 +103,17 @@ public class ConversaDaoImpl implements ConversaDao {
                 "JOIN usuarioovi u ON r.id_usuario = u.id_usuario " +
                 "WHERE c.id_conversa = ? AND u.dni = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConversa, dniUsuario);
+        return count != null && count > 0;
+    }
+
+    @Override
+    public boolean existeixConversaEntreApIUsuari(String dniAp, String dniUsuari) {
+        String sql = "SELECT COUNT(*) FROM Conversa c " +
+                "JOIN assistentpersonal ap ON c.id_ap = ap.id_ap " +
+                "JOIN aprequest r ON c.id_request = r.id_request " +
+                "JOIN usuarioovi u ON r.id_usuario = u.id_usuario " +
+                "WHERE ap.dni = ? AND u.dni = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, dniAp, dniUsuari);
         return count != null && count > 0;
     }
 

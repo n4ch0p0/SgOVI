@@ -78,6 +78,11 @@ public class UsuarioDaoImpl implements UsuarioDao {
     }
 
     @Override
+    public void updateProjecteVida(String dni, String contingut) {
+        jdbcTemplate.update("UPDATE UsuarioOVI SET projecte_vida = ? WHERE dni = ?", contingut, dni);
+    }
+
+    @Override
     public void anonimizarUsuario(String dni) {
         // Usem un hash BCrypt d'una UUID aleatòria perquè cap contrasenya
         // real coincidisca mai amb aquest valor (evita el re-login post-baixa)

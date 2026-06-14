@@ -5,4 +5,7 @@ import java.util.List;
 
 public interface RegistreContracteAsistenteDao {
     List<RegistreContracteAsistente> getContractesByAsistente(String dniPap);
+    RegistreContracteAsistente getContracte(int id);
+    void updateEstatContracte(int id, String estat);
+    boolean teContracteActiu(String dniAp);
 }

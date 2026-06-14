@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Confirmar Acció - Tècnic OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<main class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <!-- Aprovar -->
+            <div th:if="${accio == 'aprovar'}" class="card border-success shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-check-circle-fill me-2"></i>Confirmar Aprovació</h5>
+                </div>
+                <div class="card-body">
+                    <p>Estàs segur/a que vols <strong class="text-success">aprovar</strong> aquesta sol·licitud?</p>
+                    <div class="alert alert-light border mb-4">
+                        <p class="mb-1"><strong>Usuari:</strong> <span th:text="${nomUsuari}"></span></p>
+                        <p class="mb-1"><strong>Tipus Servei:</strong> <span th:text="${peticion.tipusServei}"></span></p>
+                        <p class="mb-0"><strong>Preferències:</strong> <span th:text="${peticion.preferencies}"></span></p>
+                    </div>
+                    <p class="text-muted small">L'usuari podrà cercar assistents compatibles per iniciar negociacions.</p>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                        </a>
+                        <form th:action="@{/tecnic/aprobar-solicitud}" method="post" class="d-inline">
+                            <input type="hidden" name="idRequest" th:value="${peticion.id}">
+                            <input type="hidden" name="aceptada" value="true">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i>Sí, Aprovar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rebutjar -->
+            <div th:if="${accio == 'rebutjar'}" class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-x-circle-fill me-2"></i>Confirmar Rebuig</h5>
+                </div>
+                <div class="card-body">
+                    <p>Estàs segur/a que vols <strong class="text-danger">rebutjar</strong> aquesta sol·licitud?</p>
+                    <div class="alert alert-light border mb-4">
+                        <p class="mb-1"><strong>Usuari:</strong> <span th:text="${nomUsuari}"></span></p>
+                        <p class="mb-1"><strong>Tipus Servei:</strong> <span th:text="${peticion.tipusServei}"></span></p>
+                        <p class="mb-0"><strong>Preferències:</strong> <span th:text="${peticion.preferencies}"></span></p>
+                    </div>
+                    <p class="text-muted small">La sol·licitud serà rebutjada i l'usuari no podrà cercar assistents amb aquesta petició.</p>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                        </a>
+                        <form th:action="@{/tecnic/aprobar-solicitud}" method="post" class="d-inline">
+                            <input type="hidden" name="idRequest" th:value="${peticion.id}">
+                            <input type="hidden" name="aceptada" value="false">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i>Sí, Rebutjar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

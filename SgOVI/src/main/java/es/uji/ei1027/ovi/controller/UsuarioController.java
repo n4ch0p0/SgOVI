@@ -11,7 +11,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.validation.BindingResult;
 
 @Controller
@@ -33,6 +35,8 @@ public class UsuarioController {
 
     @Autowired
     private APRequestValidator apRequestValidator;
+    @Autowired
+    private CandidatPreassignatDao candidatPreassignatDao;
 
     @GetMapping("/espera")
     public String espera(HttpSession session) {
@@ -63,6 +67,8 @@ public class UsuarioController {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuario == null || !"Acceptat".equals(usuario.getEstat())) return "redirect:/login";
         model.addAttribute("usuario", usuario);
+        model.addAttribute("teContracte", registreContracteUsuarioDao.teContracteActiu(usuario.getDni()));
+        model.addAttribute("teRequestsActives", apRequestDao.teRequestsActives(usuario.getDni()));
         return "usuario/editar_perfil";
     }
 
@@ -77,18 +83,19 @@ public class UsuarioController {
         if (usuarioActualizado.getContrasenya() == null || usuarioActualizado.getContrasenya().trim().isEmpty()) {
             usuarioActualizado.setContrasenya(usuarioSesion.getContrasenya());
         }
+        // Restaurar camps que no apareixen al formulari abans de validar
+        usuarioActualizado.setConsentimentInformat(usuarioSesion.getConsentimentInformat());
+        usuarioActualizado.setEstat(usuarioSesion.getEstat());
 
         usuarioValidator.validate(usuarioActualizado, bindingResult);
         if (bindingResult.hasErrors()) {
             return "usuario/editar_perfil";
         }
 
-        usuarioActualizado.setEstat(usuarioSesion.getEstat());
-        usuarioActualizado.setConsentimentInformat(usuarioSesion.getConsentimentInformat());
         oviService.actualizarUsuario(usuarioActualizado);
         session.setAttribute("usuarioLogueado", usuarioActualizado);
         redirectAttributes.addFlashAttribute("mensajeExito", "El perfil s'ha actualitzat correctament.");
-        return "redirect:/usuario/dashboard";
+        return "redirect:/usuario/perfil";
     }
 
     @GetMapping("/contractes")
@@ -123,7 +130,8 @@ public class UsuarioController {
 
     @PostMapping("/solicitudes/add")
     public String guardarSolicitud(@ModelAttribute("apRequest") APRequest peticion,
-                                   BindingResult bindingResult, HttpSession session) {
+                                   BindingResult bindingResult, HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuario == null) return "redirect:/login";
 
@@ -135,6 +143,7 @@ public class UsuarioController {
         }
 
         oviService.solicitarAsistencia(peticion);
+        redirectAttributes.addFlashAttribute("mensajeEnvio", "Sol·licitud enviada correctament! El tècnic la revisarà prompte.");
         return "redirect:/usuario/solicitudes";
     }
 
@@ -152,7 +161,15 @@ public class UsuarioController {
         // Verificamos que la petición está aprobada
         if (!"Aprovada".equals(peticion.getEstat())) return "redirect:/usuario/solicitudes";
 
-        List<AssistentPersonal> candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei(), peticion.getPreferencies());
+        List<String> seleccioTecnic = candidatPreassignatDao.getDniApsSeleccionats(idRequest);
+        List<AssistentPersonal> candidatos;
+        if (!seleccioTecnic.isEmpty()) {
+            Set<String> seleccioSet = new HashSet<>(seleccioTecnic);
+            candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei(), peticion.getPreferencies())
+                    .stream().filter(ap -> seleccioSet.contains(ap.getDni())).toList();
+        } else {
+            candidatos = asistenteDao.getCandidatosAdecuados(peticion.getTipusServei(), peticion.getPreferencies());
+        }
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("candidatos", candidatos);
@@ -212,11 +229,54 @@ public class UsuarioController {
     public String darDeBaja(HttpSession session, RedirectAttributes redirectAttributes) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
         if (usuario == null) return "redirect:/login";
-        
+
+        if (registreContracteUsuarioDao.teContracteActiu(usuario.getDni())) {
+            redirectAttributes.addFlashAttribute("errorBaixa", "No pots donar-te de baixa: tens un contracte actiu en vigor.");
+            return "redirect:/usuario/perfil";
+        }
+
+        apRequestDao.tancarRequestsActivesPerUsuari(usuario.getDni());
         usuarioDao.anonimizarUsuario(usuario.getDni());
         session.invalidate();
-        
+
         redirectAttributes.addFlashAttribute("mensajeBaja", "El teu compte s'ha donat de baixa correctament. Les teues dades han sigut anonimitzades segons el RGPD.");
         return "redirect:/login";
+    }
+
+    @GetMapping("/projecte-vida")
+    public String veureProjecteVida(HttpSession session, Model model) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null || !"Acceptat".equals(usuario.getEstat())) return "redirect:/login";
+        model.addAttribute("usuario", usuario);
+        return "usuario/projecte_vida";
+    }
+
+    @PostMapping("/projecte-vida/guardar")
+    public String guardarProjecteVida(@RequestParam("projecteVida") String contingut,
+                                      HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null || !"Acceptat".equals(usuario.getEstat())) return "redirect:/login";
+        usuarioDao.updateProjecteVida(usuario.getDni(), contingut);
+        usuario.setProjecteVida(contingut);
+        session.setAttribute("usuarioLogueado", usuario);
+        redirectAttributes.addFlashAttribute("mensajeExito", "El Projecte de Vida s'ha guardat correctament.");
+        return "redirect:/usuario/projecte-vida";
+    }
+
+    @GetMapping("/contractes/{id}/veure")
+    public String veureContracte(@PathVariable int id, HttpSession session, Model model) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuarioLogueado");
+        if (usuario == null) return "redirect:/login";
+
+        boolean pertany = registreContracteUsuarioDao.getContractesByUsuario(usuario.getDni())
+                .stream().anyMatch(c -> c.getId() == id);
+        if (!pertany) return "redirect:/usuario/contractes";
+
+        RegistreContracteUsuarioOvi contracte = registreContracteUsuarioDao.getContracte(id);
+        if (contracte == null) return "redirect:/usuario/contractes";
+
+        model.addAttribute("contracte", contracte);
+        model.addAttribute("backUrl", "/usuario/contractes");
+        return "usuario/veure_contracte";
     }
 }

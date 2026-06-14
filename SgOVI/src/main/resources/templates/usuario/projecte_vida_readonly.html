@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Projecte de Vida - OVI')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-journal-heart me-1"></i>Projecte de Vida</h3>
+                    <a th:href="${backUrl}" class="btn btn-dark btn-sm"><i class="bi bi-arrow-left me-1"></i>Tornar al Menú</a>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-person-fill me-1"></i>Client: <strong th:text="${nomUsuari}"></strong>
+                    </p>
+                    <div th:if="${projecteVida != null and !#strings.isEmpty(projecteVida)}"
+                         class="border rounded p-3 bg-white" style="white-space: pre-wrap; min-height: 200px;">
+                        <span th:text="${projecteVida}"></span>
+                    </div>
+                    <div th:unless="${projecteVida != null and !#strings.isEmpty(projecteVida)}"
+                         class="border rounded p-4 bg-white text-center text-muted">
+                        <i class="bi bi-journal-x" style="font-size: 2rem; display: block; margin-bottom: .5rem; opacity: .4;"></i>
+                        Aquest client encara no ha escrit el seu Projecte de Vida.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

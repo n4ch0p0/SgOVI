@@ -6,10 +6,25 @@
 <main class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="bi bi-chat-left-text"></i> Comunicació amb Usuaris</h2>
-        <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary">Tornar al Menú</a>
+        <a th:href="@{/tecnic/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Tornar al Menú</a>
     </div>
 
-    <!-- Formulari per iniciar conversa amb un usuari -->
+    <!-- Toast d'èxit -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${mensajeExito}">
+        <div id="toastXat" class="toast align-items-center text-bg-success border-0"
+             role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span th:text="${mensajeExito}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Tancar"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulari per iniciar conversa -->
     <div class="card shadow-sm mb-4 border-dark">
         <div class="card-body">
             <h6 class="fw-bold"><i class="bi bi-plus-circle"></i> Iniciar nova conversa</h6>
@@ -17,12 +32,16 @@
                 <div class="col-md-8">
                     <label class="form-label small text-muted">Selecciona l'Usuari</label>
                     <select name="dniUsuario" class="form-select" required>
-                        <option value="" disabled selected>-- Tria un usuari --</option>
-                        <option th:each="entry : ${mapaNomsUsuaris}" th:value="${entry.key}" th:text="${entry.value}"></option>
+                        <option value="" disabled selected>-- Selecciona un usuari --</option>
+                        <option th:each="entry : ${mapaNomsUsuaris}"
+                                th:value="${entry.key}"
+                                th:text="${entry.value}"></option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-dark w-100"><i class="bi bi-chat-dots"></i> Iniciar Xat</button>
+                    <button type="submit" class="btn btn-dark w-100">
+                        <i class="bi bi-chat-dots"></i> Iniciar Xat
+                    </button>
                 </div>
             </form>
         </div>
@@ -32,7 +51,8 @@
         <p class="mb-0"><strong>Sense converses:</strong> Encara no hi ha cap conversa amb usuaris.</p>
     </div>
 
-    <div th:each="conv : ${converses}" class="card shadow-sm mb-5 border-dark">
+    <div th:each="conv : ${converses}" class="card shadow-sm mb-5 border-dark"
+         th:id="'conv-' + ${conv.dniUsuario}">
         <div class="card-header bg-dark text-white d-flex justify-content-between">
             <span><i class="bi bi-person-fill"></i> Xat amb: <strong th:text="${conv.nomUsuario}"></strong></span>
             <span class="badge bg-light text-dark" th:text="'DNI: ' + ${conv.dniUsuario}"></span>
@@ -43,7 +63,8 @@
                 <div th:class="${m.emissor == 'Tecnic'} ? 'text-end' : 'text-start'">
                     <span th:class="${m.emissor == 'Tecnic'} ? 'badge bg-dark p-2' : 'badge bg-secondary p-2'"
                           th:text="${m.textMissatge}"></span>
-                    <div class="text-muted small" th:text="${m.dataEnviament != null ? #temporals.format(m.dataEnviament, 'HH:mm') : ''}"></div>
+                    <div class="text-muted small"
+                         th:text="${m.dataEnviament != null ? #temporals.format(m.dataEnviament, 'dd/MM/yyyy HH:mm') : ''}"></div>
                 </div>
             </div>
             <p th:if="${#lists.isEmpty(conv.missatges)}" class="text-center text-muted small">No hi ha missatges encara.</p>
@@ -62,5 +83,11 @@
         </div>
     </div>
 </main>
+
+<th:block th:if="${mensajeExito}">
+<script>
+    new bootstrap.Toast(document.getElementById('toastXat'), { delay: 4000 }).show();
+</script>
+</th:block>
 </body>
 </html>

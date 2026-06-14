@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Gestionar Contracte - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <a th:href="@{/asistente/contractes}" class="btn btn-outline-secondary btn-sm mb-3">
+                <i class="bi bi-arrow-left me-1"></i>Tornar als Contractes
+            </a>
+
+            <!-- Detalls del contracte -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-1"></i>Detalls del Contracte</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Client</div>
+                            <div class="fw-bold" th:text="${contracte.nomUsuari}"></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Tipus de Servei</div>
+                            <div class="fw-semibold" th:text="${contracte.tipusServei}"></div>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <div class="text-muted small">Preferències / Necessitats</div>
+                            <div class="fw-semibold" th:text="${contracte.preferencies != null ? contracte.preferencies : '—'}"></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Data d'Inici</div>
+                            <div class="fw-semibold" th:text="${#temporals.format(contracte.fechaInici, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Data de Fi</div>
+                            <div class="fw-semibold" th:text="${contracte.fechaFin != null ? #temporals.format(contracte.fechaFin, 'dd/MM/yyyy') : 'Indefinit'}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmació -->
+            <div th:if="${accio == 'confirmar'}" class="card border-success shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-check-circle me-1"></i>Confirmar Contracte</h5>
+                </div>
+                <div class="card-body">
+                    <p>Estàs segur/a que vols <strong class="text-success">acceptar</strong> aquest contracte?
+                        Amb aquesta acció el contracte quedarà formalitzat i t'compromeths a prestar el servei d'assistència al client.</p>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/asistente/contractes}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                        </a>
+                        <form th:action="@{/asistente/contractes/{id}/gestionar(id=${contracte.idSeleccion})}" method="post">
+                            <input type="hidden" name="accio" value="confirmar">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i>Sí, Confirmar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rebuig -->
+            <div th:if="${accio == 'rebutjar'}" class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-x-circle me-1"></i>Rebutjar Contracte</h5>
+                </div>
+                <div class="card-body">
+                    <p>Estàs segur/a que vols <strong class="text-danger">rebutjar</strong> aquest contracte?</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        El client tornarà a estar en estat de negociació i podrà buscar un altre assistent. <strong>Aquesta acció no es pot desfer.</strong>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/asistente/contractes}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                        </a>
+                        <form th:action="@{/asistente/contractes/{id}/gestionar(id=${contracte.idSeleccion})}" method="post">
+                            <input type="hidden" name="accio" value="rebutjar">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i>Sí, Rebutjar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

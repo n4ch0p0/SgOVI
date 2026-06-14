@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Contracte - OVI')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: navbar}"></nav>
+
+<style>
+    @media print {
+        nav, .no-print { display: none !important; }
+        .container { max-width: 100% !important; }
+        .card { border: none !important; box-shadow: none !important; }
+        .card-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+</style>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+                <a th:href="${backUrl}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Tornar al Menú
+                </a>
+                <span class="text-muted small">
+                    <i class="bi bi-printer me-1"></i>Per imprimir o guardar com a PDF, prem <kbd>Ctrl+P</kbd>
+                </span>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-1"><i class="bi bi-file-earmark-text me-2"></i>Contracte d'Assistència Personal</h4>
+                    <small class="opacity-75">SgOVI — Servei de gestió d'OVI</small>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="text-end mb-3">
+                        <span class="badge bg-success fs-6">
+                            <i class="bi bi-check-circle me-1"></i>Formalitzat
+                        </span>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <h6 class="text-muted text-uppercase fw-bold mb-3 small">Parts del Contracte</h6>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-2">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="text-muted small mb-1">Client (Usuari OVI)</div>
+                                <div class="fw-bold" th:text="${contracte.nomUsuari}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="text-muted small mb-1">Assistent Personal</div>
+                                <div class="fw-bold" th:text="${contracte.nomAssistent}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted text-uppercase fw-bold mb-3 small">Detalls del Servei</h6>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Tipus de Servei</div>
+                            <div class="fw-semibold" th:text="${contracte.tipusServei}"></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Preferències / Necessitats</div>
+                            <div class="fw-semibold" th:text="${contracte.preferencies != null ? contracte.preferencies : '—'}"></div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted text-uppercase fw-bold mb-3 small">Durada del Contracte</h6>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Data d'Inici</div>
+                            <div class="fw-semibold" th:text="${#temporals.format(contracte.dataInici, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="text-muted small">Data de Fi</div>
+                            <div class="fw-semibold" th:text="${contracte.dataFi != null ? #temporals.format(contracte.dataFi, 'dd/MM/yyyy') : 'Indefinit'}"></div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <p class="text-muted small text-center mb-0">
+                        Document generat per SgOVI — Servei de gestió d'Organitzacions per a la Vida Independent
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

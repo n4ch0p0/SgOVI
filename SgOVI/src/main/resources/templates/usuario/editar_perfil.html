@@ -8,12 +8,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-            <!-- Flash d'èxit -->
-            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-1"></i>
-                <span th:text="${mensajeExito}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tancar"></button>
-            </div>
+            <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary btn-sm mb-3">
+                <i class="bi bi-arrow-left me-1"></i>Tornar al Menú
+            </a>
 
             <div class="card shadow-sm">
                 <div class="card-header bg-secondary text-white">
@@ -73,10 +70,7 @@
                             <div class="form-text">Deixa buit per mantenir la contrasenya actual o escriu-ne una de nova.</div>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a th:href="@{/usuario/dashboard}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-1"></i>Cancel·lar
-                            </a>
+                        <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save me-1"></i>Guardar Canvis
                             </button>
@@ -106,6 +100,32 @@
     </div>
 </main>
 
+<!-- Toast error baixa (contracte actiu) -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${errorBaixa}">
+    <div id="toastErrorBaixa" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-x-circle-fill me-2"></i>
+                <span th:text="${errorBaixa}"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast d'èxit al guardar -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100" th:if="${mensajeExito}">
+    <div id="toastPerfil" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${mensajeExito}"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal de confirmació de baixa -->
 <div class="modal fade" id="modalBaixa" tabindex="-1" aria-labelledby="modalBaixaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -118,20 +138,36 @@
                         aria-label="Tancar"></button>
             </div>
             <div class="modal-body">
-                <p>Estàs segur/a que vols <strong class="text-danger">donar-te de baixa</strong>?</p>
-                <div class="alert alert-warning">
-                    <ul class="mb-0">
-                        <li>Les teues dades personals seran anonimitzades de forma permanent.</li>
-                        <li>No podràs accedir més al sistema amb aquest compte.</li>
-                        <li><strong>Aquesta acció és irreversible.</strong></li>
-                    </ul>
+
+                <!-- Blocat: té contracte actiu -->
+                <div th:if="${teContracte}" class="alert alert-danger">
+                    <i class="bi bi-x-octagon-fill me-1"></i>
+                    <strong>Acció no permesa.</strong> Tens un contracte actiu en vigor.
+                    Cal tancar el contracte abans de poder donar-te de baixa.
                 </div>
+
+                <!-- Permès: sense contracte -->
+                <div th:unless="${teContracte}">
+                    <p>Estàs segur/a que vols <strong class="text-danger">donar-te de baixa</strong>?</p>
+                    <div th:if="${teRequestsActives}" class="alert alert-warning mb-2">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        Tens sol·licituds en <em>Revisió</em> o <em>Aprovada</em>. Seran cancel·lades automàticament.
+                    </div>
+                    <div class="alert alert-warning">
+                        <ul class="mb-0">
+                            <li>Les teues dades personals seran anonimitzades de forma permanent.</li>
+                            <li>No podràs accedir més al sistema amb aquest compte.</li>
+                            <li><strong>Aquesta acció és irreversible.</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-arrow-left me-1"></i>Cancel·lar
                 </button>
-                <form th:action="@{/usuario/baja}" method="post" class="d-inline">
+                <form th:unless="${teContracte}" th:action="@{/usuario/baja}" method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-person-x-fill me-1"></i>Sí, Donar-me de Baixa
                     </button>
@@ -141,5 +177,11 @@
     </div>
 </div>
 
+<th:block th:if="${mensajeExito}">
+<script>new bootstrap.Toast(document.getElementById('toastPerfil'), { delay: 5000 }).show();</script>
+</th:block>
+<th:block th:if="${errorBaixa}">
+<script>new bootstrap.Toast(document.getElementById('toastErrorBaixa'), { delay: 6000 }).show();</script>
+</th:block>
 </body>
 </html>
