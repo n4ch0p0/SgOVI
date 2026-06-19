@@ -53,7 +53,7 @@
         No hi ha assistents actius i acceptats del tipus <strong th:text="${peticion.tipusServei}"></strong> disponibles ara mateix.
     </div>
 
-    <form th:unless="${#lists.isEmpty(candidatos)}"
+    <form id="formCandidatos" th:unless="${#lists.isEmpty(candidatos)}"
           th:action="@{/tecnic/solicitudes/{id}/candidatos/guardar(id=${peticion.id})}" method="post">
 
         <div class="row g-3">
@@ -109,7 +109,7 @@
             <a th:href="@{/tecnic/solicitudes}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left me-1"></i>Tornar a Sol·licituds
             </a>
-            <button type="submit" class="btn btn-success">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalConfirmarCandidatos">
                 <i class="bi bi-save me-1"></i>Guardar selecció
             </button>
         </div>
@@ -135,6 +135,32 @@
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto"
                     data-bs-dismiss="toast" aria-label="Tancar"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmació de candidats -->
+<div class="modal fade" id="modalConfirmarCandidatos" tabindex="-1" aria-labelledby="modalConfirmarCandidatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-success">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalConfirmarCandidatosLabel">
+                    <i class="bi bi-question-circle-fill me-1"></i>Confirmar Selecció
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Tancar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estàs segur/a que vols <strong class="text-success">guardar aquesta selecció de candidats</strong> per a la sol·licitud?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                </button>
+                <button type="button" class="btn btn-success" onclick="document.getElementById('formCandidatos').submit();">
+                    <i class="bi bi-save me-1"></i>Sí, Guardar selecció
+                </button>
+            </div>
         </div>
     </div>
 </div>

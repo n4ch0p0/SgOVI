@@ -17,7 +17,7 @@
                     <h4 class="mb-0"><i class="bi bi-person-gear"></i> Editar el meu Perfil</h4>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/usuario/perfil/guardar}" th:object="${usuario}" method="post">
+                    <form id="formEditarPerfil" th:action="@{/usuario/perfil/guardar}" th:object="${usuario}" method="post">
 
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -71,7 +71,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfirmarPerfil">
                                 <i class="bi bi-save me-1"></i>Guardar Canvis
                             </button>
                         </div>
@@ -172,6 +172,32 @@
                         <i class="bi bi-person-x-fill me-1"></i>Sí, Donar-me de Baixa
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmació d'edició de perfil -->
+<div class="modal fade" id="modalConfirmarPerfil" tabindex="-1" aria-labelledby="modalConfirmarPerfilLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-primary">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalConfirmarPerfilLabel">
+                    <i class="bi bi-question-circle-fill me-1"></i>Confirmar Canvis
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Tancar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estàs segur/a que vols <strong class="text-primary">guardar els canvis</strong> del teu perfil?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('formEditarPerfil').submit();">
+                    <i class="bi bi-save me-1"></i>Sí, Guardar Canvis
+                </button>
             </div>
         </div>
     </div>

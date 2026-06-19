@@ -11,7 +11,7 @@
                     <h4 class="mb-0">Demanar Nova Assistència</h4>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/usuario/solicitudes/add}" th:object="${apRequest}" method="post">
+                    <form id="formSolicitud" th:action="@{/usuario/solicitudes/add}" th:object="${apRequest}" method="post">
                         <div class="mb-3">
                             <label for="dniUsuario" class="form-label">El teu DNI</label>
                             <input type="text" id="dniUsuario" class="form-control bg-light"
@@ -45,7 +45,7 @@
                             <a th:href="@{/usuario/dashboard}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left me-1"></i>Cancel·lar
                             </a>
-                            <button type="submit" class="btn btn-success px-5">
+                            <button type="button" class="btn btn-success px-5" data-bs-toggle="modal" data-bs-target="#modalConfirmarSolicitud">
                                 <i class="bi bi-send me-1"></i>Enviar Sol·licitud
                             </button>
                         </div>
@@ -55,5 +55,32 @@
         </div>
     </div>
 </main>
+
+<!-- Modal de confirmació de sol·licitud -->
+<div class="modal fade" id="modalConfirmarSolicitud" tabindex="-1" aria-labelledby="modalConfirmarSolicitudLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-success">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalConfirmarSolicitudLabel">
+                    <i class="bi bi-question-circle-fill me-1"></i>Confirmar Sol·licitud
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Tancar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estàs segur/a que vols <strong class="text-success">enviar aquesta sol·licitud d'assistència</strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Cancel·lar
+                </button>
+                <button type="button" class="btn btn-success" onclick="document.getElementById('formSolicitud').submit();">
+                    <i class="bi bi-send me-1"></i>Sí, Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
